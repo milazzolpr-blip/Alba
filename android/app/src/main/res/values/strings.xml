@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Alba</string>
+    <string name="title_activity_main">Alba</string>
+    <string name="package_name">it.alba.workout</string>
+    <string name="custom_url_scheme">it.alba.workout</string>
+</resources>

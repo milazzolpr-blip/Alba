@@ -1,0 +1,4269 @@
+{
+ "programs": [
+  {
+   "id": "m7",
+   "name": "Mese 7",
+   "subtitle": "Full Body x4 in multifrequenza",
+   "period": "Novembre 2026",
+   "status": "active",
+   "note": "Max 80 minuti. Focus spalle, gambe, polpacci. Settimana 4 di deload.",
+   "days": [
+    {
+     "id": "m7-g1",
+     "name": "Full Body A",
+     "label": "A",
+     "focus": "Petto forza, quadricipiti, dorsali, spalle, polpacci",
+     "minutes": 80,
+     "techniques": [
+      {
+       "name": "Cluster set 2+2+2+2",
+       "desc": "Sulla panca: 2 rip., rack, 20 s, per 4 volte. Il recupero di 2,5 min parte a fine cluster."
+      },
+      {
+       "name": "Pausa isometrica",
+       "desc": "Squat: fermo di 2 s in buca. Calf: fermo di 2 s in allungamento."
+      },
+      {
+       "name": "Superserie",
+       "desc": "Trazioni e subito alzate laterali, con i manubri già sotto la sbarra."
+      },
+      {
+       "name": "Rest-pause",
+       "desc": "Solo sull'ultima serie di OHP manubri."
+      }
+     ],
+     "exercises": [
+      {
+       "id": "m7-1-panca-piana-bilanciere",
+       "name": "Panca piana bilanciere",
+       "sets": 4,
+       "reps": "8",
+       "weight": 65.0,
+       "weightNote": "65 kg",
+       "rest": 150,
+       "technique": "Cluster 2+2+2+2 con 20 s; discesa controllata",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-1-squat-smith-gambe-larghe",
+       "name": "Squat Smith gambe larghe",
+       "sets": 4,
+       "reps": "10",
+       "weight": 70.0,
+       "weightNote": "70 kg",
+       "rest": 120,
+       "technique": "Pausa 2 s in buca, niente rimbalzo",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-1-trazioni-lastrate-presa-neutra",
+       "name": "Trazioni lastrate presa neutra",
+       "sets": 3,
+       "reps": "6",
+       "weight": 71.2,
+       "weightNote": "71,2 kg",
+       "rest": 0,
+       "technique": "Discesa in 3 s; subito B",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-1-alzate-laterali-manubri",
+       "name": "Alzate laterali manubri",
+       "sets": 3,
+       "reps": "15",
+       "weight": 24.0,
+       "weightNote": "24 kg (12 per manubrio)",
+       "rest": 90,
+       "technique": "Gomiti morbidi, discesa in 2 s",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-1-ohp-manubri-in-piedi",
+       "name": "OHP manubri in piedi",
+       "sets": 3,
+       "reps": "10",
+       "weight": 28.0,
+       "weightNote": "28 kg (14 per manubrio)",
+       "rest": 90,
+       "technique": "Ultima serie rest-pause (15 s, poi 3-5 rip.)",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-1-calf-raise-in-piedi",
+       "name": "Calf raise in piedi",
+       "sets": 4,
+       "reps": "15",
+       "weight": 70.0,
+       "weightNote": "70 kg",
+       "rest": 45,
+       "technique": "Pausa 2 s in allungamento, salita completa",
+       "group": null,
+       "isNew": false
+      }
+     ],
+     "core": {
+      "rounds": 4,
+      "rest": 60,
+      "items": [
+       {
+        "name": "Leg raises appeso",
+        "target": "10 rip.",
+        "cue": "Nessuno slancio, bacino che ruota verso l'alto in cima"
+       },
+       {
+        "name": "Crunch inverso a terra",
+        "target": "15 rip.",
+        "cue": "Bacino che si stacca dal pavimento, discesa in 3 s"
+       },
+       {
+        "name": "Plank con tocco spalla",
+        "target": "20 tocchi",
+        "cue": "Bacino fermo, piedi larghi"
+       },
+       {
+        "name": "Crunch",
+        "target": "20 rip.",
+        "cue": "Fermo di 1 s in contrazione"
+       },
+       {
+        "name": "Hollow hold",
+        "target": "30 secondi",
+        "cue": "Zona lombare schiacciata a terra per tutto il tempo"
+       }
+      ]
+     }
+    },
+    {
+     "id": "m7-g2",
+     "name": "Full Body B",
+     "label": "B",
+     "focus": "Gambe volume, schiena forza, femorali, spalle, bicipiti, polpacci",
+     "minutes": 80,
+     "techniques": [
+      {
+       "name": "Rest-pause",
+       "desc": "Solo sull'ultima serie di leg press."
+      },
+      {
+       "name": "Eccentrica lenta",
+       "desc": "Leg curl: discesa in 3 s su ogni ripetizione."
+      },
+      {
+       "name": "Drop set",
+       "desc": "Solo sull'ultima serie di leg curl, curl ai cavi e calf seduto (-25/30%)."
+      },
+      {
+       "name": "Superserie",
+       "desc": "Pulley basso e subito alzate frontali, con i manubri accanto alla panchetta del pulley."
+      }
+     ],
+     "exercises": [
+      {
+       "id": "m7-2-leg-press",
+       "name": "Leg press",
+       "sets": 4,
+       "reps": "10",
+       "weight": 215.0,
+       "weightNote": "215 kg",
+       "rest": 120,
+       "technique": "Ultima serie rest-pause",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-2-rematore-pendlay",
+       "name": "Rematore Pendlay",
+       "sets": 3,
+       "reps": "8",
+       "weight": 60.0,
+       "weightNote": "60 kg",
+       "rest": 120,
+       "technique": "Bilanciere fermo a terra a ogni ripetizione",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-2-leg-curl-sdraiato",
+       "name": "Leg curl sdraiato",
+       "sets": 3,
+       "reps": "12",
+       "weight": 41.0,
+       "weightNote": "41 kg",
+       "rest": 75,
+       "technique": "Discesa in 3 s; ultima serie drop set",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-2-pulley-basso",
+       "name": "Pulley basso",
+       "sets": 3,
+       "reps": "8",
+       "weight": 52.0,
+       "weightNote": "52 kg",
+       "rest": 0,
+       "technique": "Fermo 1 s in contrazione; subito B",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-2-alzate-frontali-manubri",
+       "name": "Alzate frontali manubri",
+       "sets": 3,
+       "reps": "10",
+       "weight": 16.0,
+       "weightNote": "16 kg (come da log)",
+       "rest": 90,
+       "technique": "Alternate o insieme, senza slancio",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-2-shoulder-press",
+       "name": "Shoulder press",
+       "sets": 3,
+       "reps": "8",
+       "weight": 40.0,
+       "weightNote": "40 kg",
+       "rest": 90,
+       "technique": "Discesa in 2 s, gomiti non bloccati in alto",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-2-curl-bilanciere-ai-cavi",
+       "name": "Curl bilanciere ai cavi",
+       "sets": 3,
+       "reps": "10",
+       "weight": 23.5,
+       "weightNote": "23,5 kg",
+       "rest": 60,
+       "technique": "Ultima serie drop set",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-2-calf-raise-seduto",
+       "name": "Calf raise seduto",
+       "sets": 3,
+       "reps": "20",
+       "weight": 30.0,
+       "weightNote": "30 kg (stima)",
+       "rest": 45,
+       "technique": "Soleo; ultima serie drop set",
+       "group": null,
+       "isNew": true
+      }
+     ],
+     "core": {
+      "rounds": 4,
+      "rest": 60,
+      "items": [
+       {
+        "name": "V-up",
+        "target": "12 rip.",
+        "cue": "Mani verso i piedi, discesa controllata"
+       },
+       {
+        "name": "Russian twist con manubrio",
+        "target": "20 per lato",
+        "cue": "Piedi sollevati; manubrio leggero, da scegliere in S1"
+       },
+       {
+        "name": "Mountain climber",
+        "target": "30 secondi",
+        "cue": "Ritmo alto, bacino basso"
+       },
+       {
+        "name": "Crunch con gambe a 90 gradi",
+        "target": "20 rip.",
+        "cue": "Fermo di 1 s in contrazione"
+       },
+       {
+        "name": "Plank",
+        "target": "1 minuto",
+        "cue": "Glutei e addome contratti, nessun cedimento lombare"
+       }
+      ]
+     }
+    },
+    {
+     "id": "m7-g3",
+     "name": "Full Body C",
+     "label": "C",
+     "focus": "Petto alto, quadricipiti, schiena, spalle volume, braccia, polpacci",
+     "minutes": 80,
+     "techniques": [
+      {
+       "name": "Pausa isometrica",
+       "desc": "Panca inclinata: fermo di 1 s al petto."
+      },
+      {
+       "name": "Rest-pause",
+       "desc": "Solo sull'ultima serie di squat."
+      },
+      {
+       "name": "Superserie",
+       "desc": "Bulgarian split squat con manubri accanto alla leg extension; tricipiti e curl sullo stesso cavo."
+      },
+      {
+       "name": "Set meccanico manubri",
+       "desc": "Spalle: laterali, poi frontali, poi press, senza pausa. Due paia di manubri ai piedi."
+      }
+     ],
+     "exercises": [
+      {
+       "id": "m7-3-panca-inclinata-bilanciere",
+       "name": "Panca inclinata bilanciere",
+       "sets": 4,
+       "reps": "8",
+       "weight": 55.0,
+       "weightNote": "55 kg",
+       "rest": 120,
+       "technique": "Fermo 1 s al petto",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-3-squat-smith-gambe-larghe",
+       "name": "Squat Smith gambe larghe",
+       "sets": 4,
+       "reps": "12",
+       "weight": 70.0,
+       "weightNote": "70 kg",
+       "rest": 120,
+       "technique": "Ultima serie rest-pause",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-3-bulgarian-split-squat-manubri",
+       "name": "Bulgarian split squat manubri",
+       "sets": 3,
+       "reps": "8 per gamba",
+       "weight": 10.0,
+       "weightNote": "10 kg per manubrio (stima)",
+       "rest": 0,
+       "technique": "Piede dietro su panca; subito B",
+       "group": "Superserie",
+       "isNew": true
+      },
+      {
+       "id": "m7-3-leg-extension",
+       "name": "Leg extension",
+       "sets": 3,
+       "reps": "8",
+       "weight": 18.0,
+       "weightNote": "18 kg",
+       "rest": 75,
+       "technique": "Fermo 2 s in contrazione",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-3-incline-lever-row",
+       "name": "Incline lever row",
+       "sets": 3,
+       "reps": "10",
+       "weight": 46.0,
+       "weightNote": "46 kg",
+       "rest": 90,
+       "technique": "Fermo 1 s in contrazione, discesa in 3 s",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-3-alzate-laterali",
+       "name": "Alzate laterali",
+       "sets": 3,
+       "reps": "12",
+       "weight": 24.0,
+       "weightNote": "24 kg (12 per manubrio)",
+       "rest": 0,
+       "technique": "Subito 2",
+       "group": "Set meccanico",
+       "isNew": false
+      },
+      {
+       "id": "m7-3-alzate-frontali",
+       "name": "Alzate frontali",
+       "sets": 3,
+       "reps": "10",
+       "weight": 16.0,
+       "weightNote": "16 kg (come da log)",
+       "rest": 0,
+       "technique": "Subito 3",
+       "group": "Set meccanico",
+       "isNew": false
+      },
+      {
+       "id": "m7-3-ohp-manubri",
+       "name": "OHP manubri",
+       "sets": 3,
+       "reps": "8-10",
+       "weight": 24.0,
+       "weightNote": "24 kg (12 per manubrio)",
+       "rest": 90,
+       "technique": "Stessi manubri delle laterali",
+       "group": "Set meccanico",
+       "isNew": false
+      },
+      {
+       "id": "m7-3-overhead-tricipiti-cavo",
+       "name": "Overhead tricipiti cavo",
+       "sets": 3,
+       "reps": "15",
+       "weight": 16.0,
+       "weightNote": "16 kg",
+       "rest": 0,
+       "technique": "Subito B, stesso cavo",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-3-curl-bilanciere-ai-cavi",
+       "name": "Curl bilanciere ai cavi",
+       "sets": 3,
+       "reps": "10",
+       "weight": 23.5,
+       "weightNote": "23,5 kg",
+       "rest": 75,
+       "technique": "Cambio perno e via",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-3-calf-raise-in-piedi",
+       "name": "Calf raise in piedi",
+       "sets": 3,
+       "reps": "15",
+       "weight": 70.0,
+       "weightNote": "70 kg",
+       "rest": 45,
+       "technique": "Pausa 2 s in allungamento",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m7-g4",
+     "name": "Full Body D",
+     "label": "D",
+     "focus": "Dorsali forza, gambe, catena posteriore, spalle, petto, polpacci",
+     "minutes": 80,
+     "techniques": [
+      {
+       "name": "Eccentrica lenta",
+       "desc": "Trazioni e stacco rumeno: discesa in 3 s."
+      },
+      {
+       "name": "Pausa isometrica",
+       "desc": "Leg press: fermo di 1 s in basso. Calf: 2 s in allungamento."
+      },
+      {
+       "name": "Superserie",
+       "desc": "Seated row e subito alzate laterali con manubri; face pull e tricipiti sullo stesso cavo."
+      },
+      {
+       "name": "Drop set / Rest-pause",
+       "desc": "Drop set sull'ultima serie di shoulder press; rest-pause sull'ultima di panca manubri."
+      }
+     ],
+     "exercises": [
+      {
+       "id": "m7-4-trazioni-lastrate-presa-neutra",
+       "name": "Trazioni lastrate presa neutra",
+       "sets": 4,
+       "reps": "6",
+       "weight": 71.2,
+       "weightNote": "71,2 kg",
+       "rest": 120,
+       "technique": "Discesa in 3 s",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-4-leg-press",
+       "name": "Leg press",
+       "sets": 4,
+       "reps": "10",
+       "weight": 215.0,
+       "weightNote": "215 kg",
+       "rest": 120,
+       "technique": "Fermo 1 s in basso",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-4-seated-row-machine",
+       "name": "Seated row machine",
+       "sets": 3,
+       "reps": "10",
+       "weight": 26.3,
+       "weightNote": "26,3 kg per lato",
+       "rest": 0,
+       "technique": "Fermo 1 s in contrazione; subito B",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-4-alzate-laterali-manubri",
+       "name": "Alzate laterali manubri",
+       "sets": 3,
+       "reps": "15",
+       "weight": 24.0,
+       "weightNote": "24 kg (12 per manubrio)",
+       "rest": 90,
+       "technique": "Discesa in 2 s",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-4-shoulder-press",
+       "name": "Shoulder press",
+       "sets": 3,
+       "reps": "8",
+       "weight": 40.0,
+       "weightNote": "40 kg",
+       "rest": 90,
+       "technique": "Ultima serie drop set",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7-4-stacco-rumeno-bilanciere",
+       "name": "Stacco rumeno bilanciere",
+       "sets": 3,
+       "reps": "10",
+       "weight": 60.0,
+       "weightNote": "60 kg (stima)",
+       "rest": 120,
+       "technique": "Discesa in 3 s, fermo 1 s in allungamento",
+       "group": null,
+       "isNew": true
+      },
+      {
+       "id": "m7-4-panca-piana-manubri",
+       "name": "Panca piana manubri",
+       "sets": 3,
+       "reps": "10",
+       "weight": 20.0,
+       "weightNote": "20 kg per manubrio (stima)",
+       "rest": 90,
+       "technique": "Ultima serie rest-pause",
+       "group": null,
+       "isNew": true
+      },
+      {
+       "id": "m7-4-face-pull-ai-cavi",
+       "name": "Face pull ai cavi",
+       "sets": 3,
+       "reps": "15",
+       "weight": 16.0,
+       "weightNote": "16 kg",
+       "rest": 0,
+       "technique": "Gomiti alti; subito B, stesso cavo",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-4-tricipiti-cavo-singolo",
+       "name": "Tricipiti cavo singolo",
+       "sets": 3,
+       "reps": "12",
+       "weight": 6.8,
+       "weightNote": "6,8 kg",
+       "rest": 75,
+       "technique": "Per braccio, gomito fermo",
+       "group": "Superserie",
+       "isNew": false
+      },
+      {
+       "id": "m7-4-calf-raise-in-piedi",
+       "name": "Calf raise in piedi",
+       "sets": 4,
+       "reps": "15",
+       "weight": 70.0,
+       "weightNote": "70 kg",
+       "rest": 45,
+       "technique": "Pausa 2 s in allungamento",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m7w1",
+   "name": "Mese 7, settimana 1",
+   "subtitle": "Push / Pull / Legs (variazione)",
+   "period": "10-14 novembre 2026",
+   "status": "archived",
+   "note": "Settimana svolta prima del passaggio al Full Body x4. Esercizi e carichi dai tuoi log.",
+   "days": [
+    {
+     "id": "m7w1-g1",
+     "name": "Push",
+     "label": "1",
+     "focus": "",
+     "minutes": 90,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m7w1-g1-0",
+       "name": "Panca piana bilanciere",
+       "sets": 4,
+       "reps": "8",
+       "weight": 65,
+       "weightNote": "65 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-1",
+       "name": "OHP manubri in piedi",
+       "sets": 4,
+       "reps": "10",
+       "weight": 28,
+       "weightNote": "28 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-2",
+       "name": "Panca inclinata bilanciere",
+       "sets": 3,
+       "reps": "8",
+       "weight": 55,
+       "weightNote": "55 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-3",
+       "name": "Alzate laterali manubri",
+       "sets": 3,
+       "reps": "20",
+       "weight": 24,
+       "weightNote": "24 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-4",
+       "name": "Rear delt machine",
+       "sets": 3,
+       "reps": "20",
+       "weight": 39,
+       "weightNote": "39 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-5",
+       "name": "Face pull ai cavi",
+       "sets": 3,
+       "reps": "15",
+       "weight": 16,
+       "weightNote": "16 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-6",
+       "name": "Croci cavi bassi",
+       "sets": 3,
+       "reps": "12",
+       "weight": 9,
+       "weightNote": "9 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-7",
+       "name": "Overhead tricipiti cavo",
+       "sets": 3,
+       "reps": "15",
+       "weight": 16,
+       "weightNote": "16 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-8",
+       "name": "Tricipiti cavo singolo",
+       "sets": 3,
+       "reps": "12",
+       "weight": 6.8,
+       "weightNote": "6.8 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-9",
+       "name": "Leg raises appeso",
+       "sets": 3,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "corpo libero",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g1-10",
+       "name": "Abdominal machine",
+       "sets": 3,
+       "reps": "12",
+       "weight": 50,
+       "weightNote": "50 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m7w1-g2",
+     "name": "Legs & Core",
+     "label": "2",
+     "focus": "",
+     "minutes": 90,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m7w1-g2-0",
+       "name": "Squat Smith gambe larghe",
+       "sets": 4,
+       "reps": "12",
+       "weight": 70,
+       "weightNote": "70 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-1",
+       "name": "Leg curl sdraiato",
+       "sets": 3,
+       "reps": "12",
+       "weight": 41,
+       "weightNote": "41 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-2",
+       "name": "Leg press",
+       "sets": 4,
+       "reps": "10",
+       "weight": 215,
+       "weightNote": "215 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-3",
+       "name": "Affondi manubri",
+       "sets": 3,
+       "reps": "8",
+       "weight": 20,
+       "weightNote": "20 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-4",
+       "name": "Leg extension",
+       "sets": 3,
+       "reps": "8",
+       "weight": 18,
+       "weightNote": "18 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-5",
+       "name": "Abductor machine",
+       "sets": 3,
+       "reps": "20",
+       "weight": 50,
+       "weightNote": "50 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-6",
+       "name": "Calf raise in piedi",
+       "sets": 4,
+       "reps": "15",
+       "weight": 70,
+       "weightNote": "70 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-7",
+       "name": "Shoulder press",
+       "sets": 3,
+       "reps": "8",
+       "weight": 40,
+       "weightNote": "40 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-8",
+       "name": "Alzate frontali manubri",
+       "sets": 3,
+       "reps": "10",
+       "weight": 16,
+       "weightNote": "16 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g2-9",
+       "name": "Leg raises appeso",
+       "sets": 3,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "corpo libero",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m7w1-g3",
+     "name": "Pull",
+     "label": "3",
+     "focus": "",
+     "minutes": 90,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m7w1-g3-0",
+       "name": "Trazioni lastrate presa neutra",
+       "sets": 4,
+       "reps": "6",
+       "weight": 71.2,
+       "weightNote": "71.2 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-1",
+       "name": "Rematore Pendlay",
+       "sets": 3,
+       "reps": "8",
+       "weight": 60,
+       "weightNote": "60 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-2",
+       "name": "Incline lever row",
+       "sets": 3,
+       "reps": "10",
+       "weight": 46,
+       "weightNote": "46 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-3",
+       "name": "Seated row machine",
+       "sets": 3,
+       "reps": "10",
+       "weight": 52.6,
+       "weightNote": "52.6 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-4",
+       "name": "Pulley basso",
+       "sets": 3,
+       "reps": "8",
+       "weight": 52,
+       "weightNote": "52 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-5",
+       "name": "Hyperextension",
+       "sets": 3,
+       "reps": "8",
+       "weight": 10,
+       "weightNote": "10 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-6",
+       "name": "Curl bilanciere ai cavi",
+       "sets": 3,
+       "reps": "10",
+       "weight": 23.5,
+       "weightNote": "23.5 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m7w1-g3-7",
+       "name": "Curl concentrato cavo",
+       "sets": 3,
+       "reps": "10",
+       "weight": 9,
+       "weightNote": "9 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m6",
+   "name": "Mese 6",
+   "subtitle": "Multifrequenza 4 giorni",
+   "period": "Ottobre - novembre 2026",
+   "status": "archived",
+   "note": "Dati parziali: solo gli esercizi delle settimane 3 e 4 ancora disponibili nei riepiloghi. Date indicative.",
+   "days": [
+    {
+     "id": "m6-ga",
+     "name": "Trazioni, panca, tricipiti",
+     "label": "A",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m6-a-0",
+       "name": "Trazioni lastrate presa neutra",
+       "sets": 4,
+       "reps": "6",
+       "weight": 75,
+       "weightNote": "75 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-a-1",
+       "name": "Rematore Pendlay",
+       "sets": 3,
+       "reps": "8",
+       "weight": 57.4,
+       "weightNote": "57.4 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-a-2",
+       "name": "Chest supported row",
+       "sets": 2,
+       "reps": "10",
+       "weight": 42,
+       "weightNote": "42 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-a-3",
+       "name": "Panca piana bilanciere",
+       "sets": 3,
+       "reps": "8",
+       "weight": 65,
+       "weightNote": "65 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-a-4",
+       "name": "Croci cavi bassi",
+       "sets": 3,
+       "reps": "12",
+       "weight": 11.3,
+       "weightNote": "11.3 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-a-5",
+       "name": "French press",
+       "sets": 3,
+       "reps": "10",
+       "weight": 30,
+       "weightNote": "30 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-a-6",
+       "name": "Overhead tricipiti cavo",
+       "sets": 3,
+       "reps": "15",
+       "weight": 18,
+       "weightNote": "18 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m6-gb",
+     "name": "Spalle, gambe, bicipiti",
+     "label": "B",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m6-b-0",
+       "name": "Alzate laterali manubri",
+       "sets": 3,
+       "reps": "20",
+       "weight": 24,
+       "weightNote": "24 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-1",
+       "name": "Rear delt machine",
+       "sets": 3,
+       "reps": "20",
+       "weight": 39,
+       "weightNote": "39 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-2",
+       "name": "Leg curl sdraiato",
+       "sets": 3,
+       "reps": "15",
+       "weight": 41,
+       "weightNote": "41 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-3",
+       "name": "Squat Smith gambe larghe",
+       "sets": 3,
+       "reps": "15",
+       "weight": 62.5,
+       "weightNote": "62.5 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-4",
+       "name": "Abductor machine",
+       "sets": 3,
+       "reps": "20",
+       "weight": 50,
+       "weightNote": "50 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-5",
+       "name": "Curl bilanciere ai cavi",
+       "sets": 3,
+       "reps": "10",
+       "weight": 22.5,
+       "weightNote": "22.5 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-6",
+       "name": "Curl concentrato cavo",
+       "sets": 3,
+       "reps": "12",
+       "weight": 9,
+       "weightNote": "9 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m6-b-7",
+       "name": "Abdominal machine",
+       "sets": 4,
+       "reps": "15",
+       "weight": 50,
+       "weightNote": "50 kg",
+       "rest": 0,
+       "technique": "",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m5",
+   "name": "Mese 5",
+   "subtitle": "Full Body Ondulato A/B/C/D – 4 Giorni",
+   "period": "Settembre - ottobre 2026",
+   "status": "archived",
+   "note": "Scheda importata dal file originale: i carichi di quel periodo non sono registrati.",
+   "days": [
+    {
+     "id": "m5-g1",
+     "name": "Forza Massimale (85-90 min, RPE 8-9)",
+     "label": "1",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m5-1-0",
+       "name": "Stacco da terra",
+       "sets": 5,
+       "reps": "3-5",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Cluster 2+2+1 | 95-100 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-1-1",
+       "name": "Panca piana bilanciere",
+       "sets": 4,
+       "reps": "4-6",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Cluster 2+2 | 30 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-1-2",
+       "name": "Trazioni lastrate presa neutra",
+       "sets": 4,
+       "reps": "5-6",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Eccentrica 5s | BW+12 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-1-3",
+       "name": "Romanian deadlift",
+       "sets": 3,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Pausa iso 3s allungamento | 67.5 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-1-4",
+       "name": "Shoulder press bilanciere",
+       "sets": 3,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Focus postura | 25 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-1-5",
+       "name": "[SS] Curl bil. + Skull crusher EZ",
+       "sets": 3,
+       "reps": "8+8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Eccentrica 4s | 30+20 kg",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m5-g2",
+     "name": "Ipertrofia Volume (90-95 min, RPE 7-8)",
+     "label": "2",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m5-2-0",
+       "name": "Squat bilanciere",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Pausa 2s in buca | 37.5 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-2-1",
+       "name": "Panca inclinata manubri",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "21 rip ultima serie | 22 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-2-2",
+       "name": "Chest supported row manubri",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Drop set ultima | 24>18>12 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-2-3",
+       "name": "Hip thrust smith machine",
+       "sets": 4,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Pausa iso 2s | 47.5 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-2-4",
+       "name": "[SS] Alzate lat. cavi + Face pull",
+       "sets": 4,
+       "reps": "15+20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Cambio immediato | 5+18 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-2-5",
+       "name": "[SS] Curl inclinata + Push-down",
+       "sets": 3,
+       "reps": "10+12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Antagonisti | 12+22 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-2-6",
+       "name": "Crunch inversi",
+       "sets": 3,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Eccentrica 3s",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m5-g3",
+     "name": "Metabolico / Densità (85-90 min, RPE 7)",
+     "label": "3",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m5-3-0",
+       "name": "[GS] Leg press + Leg ext + Leg curl",
+       "sets": 4,
+       "reps": "12+15+15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Giant set | 70+14+29 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-3-1",
+       "name": "[GS] Croci pec-deck + Pullover + Panca mb",
+       "sets": 4,
+       "reps": "12+12+10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Giant set | leg./med./18 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-3-2",
+       "name": "[GS] Alz.lat + Alz.front + Face pull",
+       "sets": 3,
+       "reps": "15+12+20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Giant set | 6+6+18 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-3-3",
+       "name": "[GS] Curl 21 rip + Overhead tri cavo",
+       "sets": 3,
+       "reps": "21+15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Giant set | 22+22 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-3-4",
+       "name": "[SS] Plank rotazione + Ab wheel",
+       "sets": 3,
+       "reps": "12/lato+10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core finale",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m5-g4",
+     "name": "Forza Dinamica / Spalle+Braccia (90-95 min, RPE 6-9)",
+     "label": "4",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m5-4-0",
+       "name": "Squat bilanciere – ESPLOSIVO",
+       "sets": 5,
+       "reps": "3",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Concentrica max velocità | 24 kg (60%)",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-4-1",
+       "name": "Panca piana – ESPLOSIVA",
+       "sets": 5,
+       "reps": "3",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Pausa 1s petto poi esplosivo | 18 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-4-2",
+       "name": "Rematore bilanciere – ESPLOSIVO",
+       "sets": 4,
+       "reps": "5",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Tiro esplosivo verso ombelico | 42 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-4-3",
+       "name": "[GS Spalle] Lento av. + Alz.lat + Face pull",
+       "sets": 4,
+       "reps": "8+12+20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Giant set | 22+8+18 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-4-4",
+       "name": "[SS Bi] Curl bil. + Curl concentrato",
+       "sets": 4,
+       "reps": "8+12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Eccentrica 3s | 30+10 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m5-4-5",
+       "name": "[SS Tri] French press + OH tricipiti cavo",
+       "sets": 3,
+       "reps": "10+15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Capo lungo | 20+22 kg",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "dl",
+   "name": "Deload",
+   "subtitle": "3 sessioni di scarico",
+   "period": "Settembre 2026",
+   "status": "archived",
+   "note": "Scheda importata dal file originale: i carichi di quel periodo non sono registrati.",
+   "days": [
+    {
+     "id": "dl-g1",
+     "name": "Full Body Compound (55-65 min, RPE 5/10)",
+     "label": "1",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "dl-1-0",
+       "name": "Panca piana bilanciere",
+       "sets": 3,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Eccentrica 2s | Carico 17 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-1-1",
+       "name": "Trazioni presa neutra",
+       "sets": 3,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Nessuna zavorra – corpo libero",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-1-2",
+       "name": "Rematore bilanciere",
+       "sets": 3,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Pausa 1s contrazione | 25 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-1-3",
+       "name": "Shoulder press",
+       "sets": 2,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Standard | 14 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-1-4",
+       "name": "Face pull corda",
+       "sets": 2,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Eccentrica controllata",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-1-5",
+       "name": "Curl bilanciere",
+       "sets": 2,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Standard | 20 kg",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "dl-g2",
+     "name": "Lower Body (55-65 min, RPE 5/10)",
+     "label": "2",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "dl-2-0",
+       "name": "Squat bilanciere",
+       "sets": 3,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Nessuna pausa in buca | 22 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-2-1",
+       "name": "Romanian deadlift",
+       "sets": 3,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Nessuna pausa | 40 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-2-2",
+       "name": "Leg press",
+       "sets": 2,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Standard | 50 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-2-3",
+       "name": "Leg curl sdraiato",
+       "sets": 2,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Eccentrica 2s | 20 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-2-4",
+       "name": "Hip thrust smith",
+       "sets": 2,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Contrazione in cima | 30 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-2-5",
+       "name": "Calf raise in piedi",
+       "sets": 2,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "ROM completo | pausa 2s allungamento",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "dl-g3",
+     "name": "Compound + Core (45-55 min, RPE 5/10)",
+     "label": "3",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "dl-3-0",
+       "name": "Stacco da terra",
+       "sets": 3,
+       "reps": "5",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Tecnica perfetta | 60 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-3-1",
+       "name": "Panca inclinata manubri",
+       "sets": 3,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "ROM completo | 12 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-3-2",
+       "name": "Lat machine presa larga",
+       "sets": 3,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Eccentrica 2s | 30 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-3-3",
+       "name": "Alzate laterali manubri",
+       "sets": 2,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Nessun rest-pause | 5 kg",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "dl-3-4",
+       "name": "Crunch inversi",
+       "sets": 2,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Lento – eccentrica 3s",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m3",
+   "name": "Piano dicembre 2025",
+   "subtitle": "Fase Volume 70% / Forza 30% – Priorità Petto  |  LLP Method",
+   "period": "Dicembre 2025",
+   "status": "archived",
+   "note": "Scheda importata dal file originale: i carichi di quel periodo non sono registrati.",
+   "days": [
+    {
+     "id": "m3-g1",
+     "name": "Lunedì: Petto + Tricipiti + Addome",
+     "label": "1",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m3-1-0",
+       "name": "Panca piana con fermo 2 sec",
+       "sets": 4,
+       "reps": "4-5 (RPE9)",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Compound petto",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-1-1",
+       "name": "Chest press convergente + LLP",
+       "sets": 4,
+       "reps": "10-12 + 3LLP",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Last Level Protocol",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-1-2",
+       "name": "Croci ai cavi alti",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "RPE 8.5",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-1-3",
+       "name": "Estensioni unilat. sopra la testa",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Tricipite overhead",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-1-4",
+       "name": "Dips parallele zavorrate",
+       "sets": 3,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "RPE 8.5",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-1-5",
+       "name": "Sit-up zavorrato + isometria",
+       "sets": 3,
+       "reps": "12-15 + 10s",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-1-6",
+       "name": "Rotazioni palla medica",
+       "sets": 3,
+       "reps": "12/lato",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core rotazionale",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m3-g2",
+     "name": "Mercoledì: Dorso + Bicipiti + Core",
+     "label": "2",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m3-2-0",
+       "name": "Stacco sumo con fermo",
+       "sets": 4,
+       "reps": "4-6 (RPE9)",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Compound schiena",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-2-1",
+       "name": "Pulley basso + LLP",
+       "sets": 4,
+       "reps": "10-12 + 3LLP",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Last Level Protocol",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-2-2",
+       "name": "Lat machine unilaterale",
+       "sets": 3,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "RPE 8.5",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-2-3",
+       "name": "Curl incline + LLP",
+       "sets": 4,
+       "reps": "10-12 + 2LLP",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Peak contraction",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-2-4",
+       "name": "Curl 21 rip barra EZ",
+       "sets": 3,
+       "reps": "21 rip",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Tecnica 21s",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-2-5",
+       "name": "Plank zavorrato + hollow hold",
+       "sets": 3,
+       "reps": "40s + 10s",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core integrato",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-2-6",
+       "name": "Leg raise sbarra",
+       "sets": 3,
+       "reps": "max",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core inferiore",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m3-g3",
+     "name": "Venerdì: Gambe + Posteriori + Addome",
+     "label": "3",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m3-3-0",
+       "name": "Front squat con pausa",
+       "sets": 4,
+       "reps": "4-6 (RPE9)",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Quad + mobilità",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-3-1",
+       "name": "Pressa piedi bassi + LLP",
+       "sets": 4,
+       "reps": "12-15 + 4LLP",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Last Level Protocol",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-3-2",
+       "name": "Hip thrust con fermo",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Glutei",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-3-3",
+       "name": "Leg curl unilaterale",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Femorali",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-3-4",
+       "name": "Walking lunges",
+       "sets": 2,
+       "reps": "16 passi",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Funzionale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-3-5",
+       "name": "Cable crunch",
+       "sets": 3,
+       "reps": "15-20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core addominale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-3-6",
+       "name": "Plank laterale + reach",
+       "sets": 3,
+       "reps": "10/lato",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core laterale",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m3-g4",
+     "name": "Sabato: Spalle + Richiamo Petto + Core",
+     "label": "4",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m3-4-0",
+       "name": "Shoulder press bil. in piedi",
+       "sets": 4,
+       "reps": "6-8 (RPE9)",
+       "weight": null,
+       "weightNote": "",
+       "rest": 150,
+       "technique": "Compound spalle",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-4-1",
+       "name": "Alzate laterali con pausa",
+       "sets": 4,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "RPE 9 | deltoide mediale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-4-2",
+       "name": "Reverse pec deck / Face pull",
+       "sets": 3,
+       "reps": "15-18",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Deltoide posteriore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-4-3",
+       "name": "Scrollate ai cavi",
+       "sets": 3,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Trapezio superiore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-4-4",
+       "name": "Pec deck ROM ridotto",
+       "sets": 3,
+       "reps": "10-12 (RPE9)",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Petto richiamo",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-4-5",
+       "name": "Sit-up Russian twist disco",
+       "sets": 3,
+       "reps": "12/lato",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m3-4-6",
+       "name": "Ab wheel rollout",
+       "sets": 3,
+       "reps": "max",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Core anti-estensione",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m2",
+   "name": "Mese 2",
+   "subtitle": "Fase Intensificazione – Upper/Lower Split 4 Giorni",
+   "period": "Autunno 2025",
+   "status": "archived",
+   "note": "Scheda importata dal file originale: i carichi di quel periodo non sono registrati.",
+   "days": [
+    {
+     "id": "m2-g1",
+     "name": "Upper A: Petto + Tricipiti + Spalle Anteriori",
+     "label": "1",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m2-1-0",
+       "name": "Panca piana bilanciere",
+       "sets": 4,
+       "reps": "5-7 (RPE8-9)",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Eccentrica 3s",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-1",
+       "name": "Set Meccanico inclinata>piana>declino",
+       "sets": 1,
+       "reps": "8+8+8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Cambio presa immediato",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-2",
+       "name": "Croci cavi bassi",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Rest-pause ultima serie",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-3",
+       "name": "Lento avanti bilanciere",
+       "sets": 3,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Spalle – standing",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-4",
+       "name": "Alzate frontali disco",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "SS con lento avanti",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-5",
+       "name": "Push-down corda",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Tricipite cavo",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-6",
+       "name": "Skull crusher EZ",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Tricipite overhead",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-1-7",
+       "name": "Dips",
+       "sets": 2,
+       "reps": "max",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Finisher",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m2-g2",
+     "name": "Lower A: Quadricipiti + Polpacci + Core",
+     "label": "2",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m2-2-0",
+       "name": "Squat bilanciere",
+       "sets": 4,
+       "reps": "5-7",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Pausa iso 2s buca",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-1",
+       "name": "Leg press piedi stretti",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Drop set ultima serie",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-2",
+       "name": "Sissy squat / Leg extension",
+       "sets": 3,
+       "reps": "15-20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Isolamento quad",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-3",
+       "name": "Affondi bulgari",
+       "sets": 3,
+       "reps": "10/gamba",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Unilaterale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-4",
+       "name": "Hack squat",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Volume quad",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-5",
+       "name": "Calf raise in piedi",
+       "sets": 5,
+       "reps": "15-20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Polpacci",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-6",
+       "name": "Calf seduto",
+       "sets": 3,
+       "reps": "20-25",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Soleo",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-7",
+       "name": "Hollow body hold",
+       "sets": 3,
+       "reps": "30-45 sec",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core anti-estensione",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-2-8",
+       "name": "Rotazioni russe disco",
+       "sets": 3,
+       "reps": "20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core rotazione",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m2-g3",
+     "name": "Upper B: Schiena + Bicipiti + Spalle Posteriori",
+     "label": "3",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m2-3-0",
+       "name": "Trazioni presa larga",
+       "sets": 4,
+       "reps": "5-7",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Eccentrica 4s",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-1",
+       "name": "Rematore supinata",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Tirata orizzontale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-2",
+       "name": "Rematore unilaterale",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Isolamento",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-3",
+       "name": "Pullover cavi",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Grande dorsale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-4",
+       "name": "Curl bilanciere",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Bicipite",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-5",
+       "name": "Curl concentrato su inclinata",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Peak contraction",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-6",
+       "name": "Curl martello corda",
+       "sets": 2,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Drop set ultima",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-7",
+       "name": "Face pull",
+       "sets": 4,
+       "reps": "15-20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Deltoide posteriore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-3-8",
+       "name": "Alzate laterali cavi unilat.",
+       "sets": 3,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Deltoide mediale",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m2-g4",
+     "name": "Lower B: Femorali + Glutei + Core",
+     "label": "4",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m2-4-0",
+       "name": "Stacco da terra",
+       "sets": 4,
+       "reps": "4-6",
+       "weight": null,
+       "weightNote": "",
+       "rest": 210,
+       "technique": "Compound principale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-1",
+       "name": "Romanian deadlift",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Pausa iso 2s",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-2",
+       "name": "Leg curl sdraiato",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Drop set ultima serie",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-3",
+       "name": "Leg curl seduto",
+       "sets": 3,
+       "reps": "15-20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 75,
+       "technique": "Isolamento femorali",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-4",
+       "name": "Hip thrust",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Glutei",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-5",
+       "name": "Sumo / Abductor machine",
+       "sets": 3,
+       "reps": "15-20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Adduttori/abduttori",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-6",
+       "name": "Good morning",
+       "sets": 3,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Catena posteriore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-7",
+       "name": "Crunch inversi",
+       "sets": 3,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core inferiore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m2-4-8",
+       "name": "Plank laterale con rotazione",
+       "sets": 3,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core anti-rot.",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "m1",
+   "name": "Mese 1",
+   "subtitle": "Volume / Forza – 4 Giorni",
+   "period": "14 settembre - 12 ottobre 2025",
+   "status": "archived",
+   "note": "Scheda importata dal file originale: i carichi di quel periodo non sono registrati.",
+   "days": [
+    {
+     "id": "m1-g1",
+     "name": "Petto + Spalle + Tricipiti + Core + MetCon",
+     "label": "1",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m1-1-0",
+       "name": "Panca piana bilanciere",
+       "sets": 4,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Compound principale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-1",
+       "name": "Panca inclinata manubri",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Focus petto alto",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-2",
+       "name": "Military press",
+       "sets": 4,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Compound spalle",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-3",
+       "name": "Croci cavi alti",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Isolamento petto",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-4",
+       "name": "Tricipite manubrio",
+       "sets": 4,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Overhead",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-5",
+       "name": "Tricipite corda",
+       "sets": 3,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Push-down",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-6",
+       "name": "Plank",
+       "sets": 3,
+       "reps": "60 sec",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core isometrico",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-7",
+       "name": "Russian twist",
+       "sets": 3,
+       "reps": "20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core rotazione",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-1-8",
+       "name": "MetCon AMRAP 10 min",
+       "sets": 1,
+       "reps": "AMRAP",
+       "weight": null,
+       "weightNote": "",
+       "rest": 0,
+       "technique": "Finisher metabolico",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m1-g2",
+     "name": "Gambe Quad Focus + Spalle + Core",
+     "label": "2",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m1-2-0",
+       "name": "Squat bilanciere",
+       "sets": 5,
+       "reps": "5",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Compound principale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-1",
+       "name": "Bulgarian split squat",
+       "sets": 4,
+       "reps": "10/gamba",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Unilaterale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-2",
+       "name": "Leg press",
+       "sets": 4,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Volume quad",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-3",
+       "name": "Affondi",
+       "sets": 3,
+       "reps": "12/gamba",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Funzionale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-4",
+       "name": "Spinte manubri in piedi",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Spalle",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-5",
+       "name": "Alzate laterali",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Deltoide mediale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-6",
+       "name": "Alzate frontali",
+       "sets": 4,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Deltoide anteriore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-7",
+       "name": "Croci inverse",
+       "sets": 3,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Deltoide posteriore",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-8",
+       "name": "Hanging leg raises",
+       "sets": 4,
+       "reps": "12-15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core appendere",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-2-9",
+       "name": "Side plank",
+       "sets": 3,
+       "reps": "45 sec",
+       "weight": null,
+       "weightNote": "",
+       "rest": 30,
+       "technique": "Core laterale",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m1-g3",
+     "name": "Schiena + Bicipiti + Core + MetCon",
+     "label": "3",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m1-3-0",
+       "name": "Stacco da terra",
+       "sets": 5,
+       "reps": "5",
+       "weight": null,
+       "weightNote": "",
+       "rest": 180,
+       "technique": "Compound principale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-1",
+       "name": "Lat machine",
+       "sets": 4,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Tirata verticale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-2",
+       "name": "Pulley basso",
+       "sets": 4,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Tirata orizzontale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-3",
+       "name": "Rematore manubrio",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Unilaterale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-4",
+       "name": "Rematore singolo cavi",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Isolamento",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-5",
+       "name": "Trazioni supine",
+       "sets": 4,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "BW",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-6",
+       "name": "Curl bilanciere",
+       "sets": 4,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Bicipite",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-7",
+       "name": "Curl manubri alternati",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Isolamento",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-8",
+       "name": "Ab wheel rollout",
+       "sets": 3,
+       "reps": "12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 60,
+       "technique": "Core",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-3-9",
+       "name": "EMOM 10 min",
+       "sets": 1,
+       "reps": "EMOM",
+       "weight": null,
+       "weightNote": "",
+       "rest": 0,
+       "technique": "Finisher",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    },
+    {
+     "id": "m1-g4",
+     "name": "Lower Posterior + Upper Mix",
+     "label": "4",
+     "focus": "",
+     "minutes": null,
+     "techniques": [],
+     "exercises": [
+      {
+       "id": "m1-4-0",
+       "name": "Hip thrust",
+       "sets": 4,
+       "reps": "8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Glutei principale",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-1",
+       "name": "Leg curl sdraiato",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Femorali",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-2",
+       "name": "Overhead squat – tecnica",
+       "sets": 4,
+       "reps": "6",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Mobilità+forza",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-3",
+       "name": "Polpacci",
+       "sets": 4,
+       "reps": "15",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Isolamento",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-4",
+       "name": "Pectoral machine",
+       "sets": 4,
+       "reps": "8-10",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Petto richiamo",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-5",
+       "name": "Dips parallele zavorrate",
+       "sets": 4,
+       "reps": "6-8",
+       "weight": null,
+       "weightNote": "",
+       "rest": 120,
+       "technique": "Tri+petto",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-6",
+       "name": "Arnold press",
+       "sets": 3,
+       "reps": "10-12",
+       "weight": null,
+       "weightNote": "",
+       "rest": 90,
+       "technique": "Spalle 3D",
+       "group": null,
+       "isNew": false
+      },
+      {
+       "id": "m1-4-7",
+       "name": "Plank walkout + mountain climbers",
+       "sets": 3,
+       "reps": "10+20",
+       "weight": null,
+       "weightNote": "",
+       "rest": 45,
+       "technique": "Core integrato",
+       "group": null,
+       "isNew": false
+      }
+     ]
+    }
+   ]
+  }
+ ],
+ "logs": [
+  {
+   "id": "log-2026-10-27T04:50:00-m6-ga",
+   "programId": "m6",
+   "dayId": "m6-ga",
+   "dayName": "Trazioni, panca, tricipiti",
+   "startedAt": "2026-10-27T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": true,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Trazioni lastrate presa neutra",
+     "sets": [
+      {
+       "w": 75,
+       "r": 6
+      },
+      {
+       "w": 75,
+       "r": 6
+      },
+      {
+       "w": 75,
+       "r": 5
+      },
+      {
+       "w": 75,
+       "r": 5
+      }
+     ]
+    },
+    {
+     "name": "Rematore Pendlay",
+     "sets": [
+      {
+       "w": 54.4,
+       "r": 8
+      },
+      {
+       "w": 54.4,
+       "r": 8
+      },
+      {
+       "w": 54.4,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Chest supported row",
+     "sets": [
+      {
+       "w": 42,
+       "r": 10
+      },
+      {
+       "w": 42,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Panca piana bilanciere",
+     "sets": [
+      {
+       "w": 62.4,
+       "r": 8
+      },
+      {
+       "w": 62.4,
+       "r": 8
+      },
+      {
+       "w": 62.4,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Croci cavi bassi",
+     "sets": [
+      {
+       "w": 11.3,
+       "r": 12
+      },
+      {
+       "w": 11.3,
+       "r": 12
+      },
+      {
+       "w": 11.3,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "French press",
+     "sets": [
+      {
+       "w": 30,
+       "r": 10
+      },
+      {
+       "w": 30,
+       "r": 10
+      },
+      {
+       "w": 30,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Overhead tricipiti cavo",
+     "sets": [
+      {
+       "w": 18,
+       "r": 15
+      },
+      {
+       "w": 18,
+       "r": 15
+      },
+      {
+       "w": 18,
+       "r": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log-2026-10-29T04:50:00-m6-gb",
+   "programId": "m6",
+   "dayId": "m6-gb",
+   "dayName": "Spalle, gambe, bicipiti",
+   "startedAt": "2026-10-29T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": true,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Alzate laterali manubri",
+     "sets": [
+      {
+       "w": 24,
+       "r": 15
+      },
+      {
+       "w": 24,
+       "r": 15
+      },
+      {
+       "w": 24,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Rear delt machine",
+     "sets": [
+      {
+       "w": 39,
+       "r": 20
+      },
+      {
+       "w": 39,
+       "r": 20
+      },
+      {
+       "w": 39,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Leg curl sdraiato",
+     "sets": [
+      {
+       "w": 41,
+       "r": 15
+      },
+      {
+       "w": 41,
+       "r": 15
+      },
+      {
+       "w": 41,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Squat Smith gambe larghe",
+     "sets": [
+      {
+       "w": 62.5,
+       "r": 15
+      },
+      {
+       "w": 62.5,
+       "r": 15
+      },
+      {
+       "w": 62.5,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Abductor machine",
+     "sets": [
+      {
+       "w": 50,
+       "r": 20
+      },
+      {
+       "w": 50,
+       "r": 20
+      },
+      {
+       "w": 50,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Curl bilanciere ai cavi",
+     "sets": [
+      {
+       "w": 22.5,
+       "r": 10
+      },
+      {
+       "w": 22.5,
+       "r": 10
+      },
+      {
+       "w": 22.5,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Curl concentrato cavo",
+     "sets": [
+      {
+       "w": 9,
+       "r": 12
+      },
+      {
+       "w": 9,
+       "r": 12
+      },
+      {
+       "w": 9,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Abdominal machine",
+     "sets": [
+      {
+       "w": 50,
+       "r": 15
+      },
+      {
+       "w": 50,
+       "r": 15
+      },
+      {
+       "w": 50,
+       "r": 15
+      },
+      {
+       "w": 50,
+       "r": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log-2026-11-03T04:50:00-m6-ga",
+   "programId": "m6",
+   "dayId": "m6-ga",
+   "dayName": "Trazioni, panca, tricipiti",
+   "startedAt": "2026-11-03T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": true,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Trazioni lastrate presa neutra",
+     "sets": [
+      {
+       "w": 75,
+       "r": 6
+      },
+      {
+       "w": 75,
+       "r": 6
+      },
+      {
+       "w": 75,
+       "r": 6
+      },
+      {
+       "w": 75,
+       "r": 6
+      }
+     ]
+    },
+    {
+     "name": "Rematore Pendlay",
+     "sets": [
+      {
+       "w": 57.4,
+       "r": 8
+      },
+      {
+       "w": 57.4,
+       "r": 8
+      },
+      {
+       "w": 57.4,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Chest supported row",
+     "sets": [
+      {
+       "w": 42,
+       "r": 10
+      },
+      {
+       "w": 42,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Panca piana bilanciere",
+     "sets": [
+      {
+       "w": 65,
+       "r": 8
+      },
+      {
+       "w": 65,
+       "r": 8
+      },
+      {
+       "w": 65,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Croci cavi bassi",
+     "sets": [
+      {
+       "w": 11.3,
+       "r": 12
+      },
+      {
+       "w": 11.3,
+       "r": 12
+      },
+      {
+       "w": 11.3,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "French press",
+     "sets": [
+      {
+       "w": 30,
+       "r": 10
+      },
+      {
+       "w": 30,
+       "r": 10
+      },
+      {
+       "w": 30,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Overhead tricipiti cavo",
+     "sets": [
+      {
+       "w": 18,
+       "r": 15
+      },
+      {
+       "w": 18,
+       "r": 15
+      },
+      {
+       "w": 18,
+       "r": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log-2026-11-05T04:50:00-m6-gb",
+   "programId": "m6",
+   "dayId": "m6-gb",
+   "dayName": "Spalle, gambe, bicipiti",
+   "startedAt": "2026-11-05T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": true,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Alzate laterali manubri",
+     "sets": [
+      {
+       "w": 24,
+       "r": 15
+      },
+      {
+       "w": 24,
+       "r": 15
+      },
+      {
+       "w": 24,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Rear delt machine",
+     "sets": [
+      {
+       "w": 39,
+       "r": 20
+      },
+      {
+       "w": 39,
+       "r": 20
+      },
+      {
+       "w": 39,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Leg curl sdraiato",
+     "sets": [
+      {
+       "w": 41,
+       "r": 15
+      },
+      {
+       "w": 41,
+       "r": 15
+      },
+      {
+       "w": 41,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Squat Smith gambe larghe",
+     "sets": [
+      {
+       "w": 62.5,
+       "r": 15
+      },
+      {
+       "w": 62.5,
+       "r": 15
+      },
+      {
+       "w": 62.5,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Abductor machine",
+     "sets": [
+      {
+       "w": 50,
+       "r": 20
+      },
+      {
+       "w": 50,
+       "r": 20
+      },
+      {
+       "w": 50,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Curl bilanciere ai cavi",
+     "sets": [
+      {
+       "w": 22.5,
+       "r": 10
+      },
+      {
+       "w": 22.5,
+       "r": 10
+      },
+      {
+       "w": 22.5,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Curl concentrato cavo",
+     "sets": [
+      {
+       "w": 9,
+       "r": 12
+      },
+      {
+       "w": 9,
+       "r": 12
+      },
+      {
+       "w": 9,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Abdominal machine",
+     "sets": [
+      {
+       "w": 50,
+       "r": 15
+      },
+      {
+       "w": 50,
+       "r": 15
+      },
+      {
+       "w": 50,
+       "r": 15
+      },
+      {
+       "w": 50,
+       "r": 15
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log-2026-11-10T04:50:00-m7w1-g1",
+   "programId": "m7w1",
+   "dayId": "m7w1-g1",
+   "dayName": "Push",
+   "startedAt": "2026-11-10T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": false,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Panca piana bilanciere",
+     "sets": [
+      {
+       "w": 65,
+       "r": 8
+      },
+      {
+       "w": 65,
+       "r": 8
+      },
+      {
+       "w": 65,
+       "r": 8
+      },
+      {
+       "w": 65,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "OHP manubri in piedi",
+     "sets": [
+      {
+       "w": 28,
+       "r": 10
+      },
+      {
+       "w": 28,
+       "r": 10
+      },
+      {
+       "w": 28,
+       "r": 10
+      },
+      {
+       "w": 28,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Panca inclinata bilanciere",
+     "sets": [
+      {
+       "w": 55,
+       "r": 8
+      },
+      {
+       "w": 55,
+       "r": 8
+      },
+      {
+       "w": 55,
+       "r": 7
+      }
+     ]
+    },
+    {
+     "name": "Alzate laterali manubri",
+     "sets": [
+      {
+       "w": 24,
+       "r": 15
+      },
+      {
+       "w": 24,
+       "r": 15
+      },
+      {
+       "w": 24,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Rear delt machine",
+     "sets": [
+      {
+       "w": 39,
+       "r": 20
+      },
+      {
+       "w": 39,
+       "r": 20
+      },
+      {
+       "w": 39,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Face pull ai cavi",
+     "sets": [
+      {
+       "w": 16,
+       "r": 15
+      },
+      {
+       "w": 16,
+       "r": 15
+      },
+      {
+       "w": 16,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Croci cavi bassi",
+     "sets": [
+      {
+       "w": 9,
+       "r": 12
+      },
+      {
+       "w": 9,
+       "r": 12
+      },
+      {
+       "w": 9,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Overhead tricipiti cavo",
+     "sets": [
+      {
+       "w": 16,
+       "r": 15
+      },
+      {
+       "w": 16,
+       "r": 15
+      },
+      {
+       "w": 16,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Tricipiti cavo singolo",
+     "sets": [
+      {
+       "w": 6.8,
+       "r": 12
+      },
+      {
+       "w": 6.8,
+       "r": 12
+      },
+      {
+       "w": 6.8,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Leg raises appeso",
+     "sets": [
+      {
+       "w": null,
+       "r": 8
+      },
+      {
+       "w": null,
+       "r": 8
+      },
+      {
+       "w": null,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Abdominal machine",
+     "sets": [
+      {
+       "w": 50,
+       "r": 12
+      },
+      {
+       "w": 50,
+       "r": 12
+      },
+      {
+       "w": 50,
+       "r": 12
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log-2026-11-12T04:50:00-m7w1-g2",
+   "programId": "m7w1",
+   "dayId": "m7w1-g2",
+   "dayName": "Legs & Core",
+   "startedAt": "2026-11-12T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": false,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Squat Smith gambe larghe",
+     "sets": [
+      {
+       "w": 70,
+       "r": 12
+      },
+      {
+       "w": 70,
+       "r": 12
+      },
+      {
+       "w": 70,
+       "r": 12
+      },
+      {
+       "w": 70,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Leg curl sdraiato",
+     "sets": [
+      {
+       "w": 41,
+       "r": 12
+      },
+      {
+       "w": 41,
+       "r": 12
+      },
+      {
+       "w": 41,
+       "r": 12
+      }
+     ]
+    },
+    {
+     "name": "Leg press",
+     "sets": [
+      {
+       "w": 215,
+       "r": 10
+      },
+      {
+       "w": 215,
+       "r": 10
+      },
+      {
+       "w": 215,
+       "r": 10
+      },
+      {
+       "w": 215,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Affondi manubri",
+     "sets": [
+      {
+       "w": 20,
+       "r": 8
+      },
+      {
+       "w": 20,
+       "r": 8
+      },
+      {
+       "w": 20,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Leg extension",
+     "sets": [
+      {
+       "w": 18,
+       "r": 8
+      },
+      {
+       "w": 18,
+       "r": 8
+      },
+      {
+       "w": 18,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Abductor machine",
+     "sets": [
+      {
+       "w": 50,
+       "r": 20
+      },
+      {
+       "w": 50,
+       "r": 20
+      },
+      {
+       "w": 50,
+       "r": 20
+      }
+     ]
+    },
+    {
+     "name": "Calf raise in piedi",
+     "sets": [
+      {
+       "w": 70,
+       "r": 15
+      },
+      {
+       "w": 70,
+       "r": 15
+      },
+      {
+       "w": 70,
+       "r": 15
+      },
+      {
+       "w": 70,
+       "r": 15
+      }
+     ]
+    },
+    {
+     "name": "Shoulder press",
+     "sets": [
+      {
+       "w": 40,
+       "r": 8
+      },
+      {
+       "w": 40,
+       "r": 8
+      },
+      {
+       "w": 40,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Alzate frontali manubri",
+     "sets": [
+      {
+       "w": 16,
+       "r": 10
+      },
+      {
+       "w": 16,
+       "r": 10
+      },
+      {
+       "w": 16,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Leg raises appeso",
+     "sets": [
+      {
+       "w": null,
+       "r": 8
+      },
+      {
+       "w": null,
+       "r": 8
+      },
+      {
+       "w": null,
+       "r": 8
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "log-2026-11-14T04:50:00-m7w1-g3",
+   "programId": "m7w1",
+   "dayId": "m7w1-g3",
+   "dayName": "Pull",
+   "startedAt": "2026-11-14T04:50:00",
+   "durationMs": null,
+   "pausedMs": null,
+   "restMs": null,
+   "approx": false,
+   "imported": true,
+   "entries": [
+    {
+     "name": "Trazioni lastrate presa neutra",
+     "sets": [
+      {
+       "w": 71.2,
+       "r": 6
+      },
+      {
+       "w": 71.2,
+       "r": 6
+      },
+      {
+       "w": 71.2,
+       "r": 6
+      },
+      {
+       "w": 71.2,
+       "r": 6
+      }
+     ]
+    },
+    {
+     "name": "Rematore Pendlay",
+     "sets": [
+      {
+       "w": 60,
+       "r": 8
+      },
+      {
+       "w": 60,
+       "r": 8
+      },
+      {
+       "w": 60,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Incline lever row",
+     "sets": [
+      {
+       "w": 46,
+       "r": 10
+      },
+      {
+       "w": 46,
+       "r": 10
+      },
+      {
+       "w": 46,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Seated row machine",
+     "sets": [
+      {
+       "w": 52.6,
+       "r": 10
+      },
+      {
+       "w": 52.6,
+       "r": 10
+      },
+      {
+       "w": 52.6,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Pulley basso",
+     "sets": [
+      {
+       "w": 52,
+       "r": 8
+      },
+      {
+       "w": 52,
+       "r": 8
+      },
+      {
+       "w": 52,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Hyperextension",
+     "sets": [
+      {
+       "w": 10,
+       "r": 8
+      },
+      {
+       "w": 10,
+       "r": 8
+      },
+      {
+       "w": 10,
+       "r": 8
+      }
+     ]
+    },
+    {
+     "name": "Curl bilanciere ai cavi",
+     "sets": [
+      {
+       "w": 23.5,
+       "r": 10
+      },
+      {
+       "w": 23.5,
+       "r": 10
+      },
+      {
+       "w": 23.5,
+       "r": 10
+      }
+     ]
+    },
+    {
+     "name": "Curl concentrato cavo",
+     "sets": [
+      {
+       "w": 9,
+       "r": 10
+      },
+      {
+       "w": 9,
+       "r": 10
+      },
+      {
+       "w": 9,
+       "r": 10
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}

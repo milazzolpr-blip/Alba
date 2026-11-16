@@ -1,0 +1,18 @@
+const { chromium, devices } = require('playwright')
+const out = '/tmp/claude-0/-home-claude/1214e15e-fc34-56db-9f1d-4839bd22a61e/scratchpad/m-'
+;(async () => {
+  const b = await chromium.launch()
+  const p = await (await b.newContext({ ...devices['Pixel 7'] })).newPage()
+  await p.clock.install({ time: new Date('2026-11-16T04:50:00+01:00') })
+  await p.goto('http://localhost:4173/'); await p.waitForTimeout(900)
+  const shot = (n) => p.screenshot({ path: out + n + '.png' })
+  await shot('1')
+  await p.getByRole('button', { name: 'Schede' }).click(); await p.locator('.prog').first().click(); await p.waitForTimeout(200); await shot('3')
+  await p.getByRole('button', { name: 'Archivio' }).click(); await p.waitForTimeout(200); await shot('4')
+  await p.getByRole('tab', { name: 'Esercizi' }).click(); await p.getByRole('button', { name: /Rematore Pendlay/ }).click(); await p.waitForTimeout(200); await shot('5')
+  await p.getByRole('button', { name: 'Profilo' }).click(); await p.waitForTimeout(400); await shot('6')
+  await p.getByRole('button', { name: 'Oggi' }).click()
+  await p.getByRole('button', { name: 'Inizia allenamento' }).click(); await p.clock.runFor(754000)
+  const c = p.locator('.set-check'); await c.nth(0).click(); await c.nth(1).click(); await p.clock.runFor(48000); await shot('2')
+  await b.close()
+})()
