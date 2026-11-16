@@ -75,22 +75,31 @@ export type Parsed = { kind: 'log'; log: LogIn; text: string } | { kind: 'patch'
 
 export function parseCoach(raw: string): Parsed {
   const text = raw.trim()
-  const m = text.match(/```\s*alba-(patch|program|log)\s*([\s\S]*?)```/i)
-  if (!m) return { kind: 'none', text, error: text ? 'Non trovo un blocco alba-patch o alba-program nella risposta.' : undefined }
-  let j: unknown
-  try { j = JSON.parse(m[2]) } catch { return { kind: 'none', text, error: 'Il blocco non è un JSON valido. Chiedi al coach di rimandarlo.' } }
-  const prose = text.replace(m[0], '').trim()
-  if (m[1].toLowerCase() === 'log') {
-    const l = j as LogIn
+  let kind = '', body = '', whole = ''
+  const m = text.match(/```\s*(?:alba-)?(patch|program|log|json)?\s*([\s\S]*?)```/i)
+  if (m && m[2].trim().startsWith('{')) { kind = (m[1] ?? '').toLowerCase(); body = m[2]; whole = m[0] }
+  else {
+    // Senza le virgolette del blocco: si prende il primo JSON tra graffe, anche se la copia ha perso i tre apici.
+    const a = text.indexOf('{'), z = text.lastIndexOf('}')
+    if (a >= 0 && z > a) { body = text.slice(a, z + 1); whole = body }
+  }
+  if (!body) return { kind: 'none', text, error: text ? 'Non trovo nessun blocco da leggere: incolla la risposta del coach comprensiva del testo tra graffe.' : undefined }
+  let j: Record<string, unknown>
+  try { j = JSON.parse(body) } catch { return { kind: 'none', text, error: 'Il blocco non è un JSON valido. Chiedi al coach di rimandarlo.' } }
+  // Il tipo si riconosce dal contenuto, quindi funziona anche se la parola alba-… non è stata copiata.
+  if (kind !== 'patch' && kind !== 'program' && kind !== 'log') kind = Array.isArray(j.days) ? 'program' : Array.isArray(j.entries) ? 'log' : 'patch'
+  const prose = text.replace(whole, '').trim()
+  if (kind === 'log') {
+    const l = j as unknown as LogIn
     if (!l || typeof l.day !== 'string' || !Array.isArray(l.entries) || typeof l.startedAt !== 'string') return { kind: 'none', text, error: 'Nel blocco alba-log mancano day, startedAt o entries.' }
     return { kind: 'log', log: l, text: prose }
   }
-  if (m[1].toLowerCase() === 'patch') {
-    const p = j as Patch
+  if (kind === 'patch') {
+    const p = j as unknown as Patch
     if (!p || typeof p.day !== 'string') return { kind: 'none', text, error: 'Nel blocco manca il campo "day".' }
     return { kind: 'patch', patch: p, text: prose }
   }
-  const raw2 = j as Partial<Program>
+  const raw2 = j as unknown as Partial<Program>
   if (!raw2 || !Array.isArray(raw2.days) || !raw2.days.length) return { kind: 'none', text, error: 'Nel programma mancano i giorni.' }
   const id = `m-${uid()}`
   const days: Day[] = raw2.days.map((d, i) => {
