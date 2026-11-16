@@ -1,7 +1,8 @@
 import { useMemo, useState } from 'react'
 import { useStore } from './store'
 import { Icon, TopBar, ConfirmButton } from './ui'
-import { applyPatch, coachSummary, findDay, parseCoach, type Range } from './coach'
+import { applyPatch, buildLog, coachSummary, findDay, parseCoach, type Range } from './coach'
+import { fmtKg } from './lib'
 import type { Nav } from './App'
 
 async function copyText(text: string) {
@@ -48,6 +49,24 @@ export function CoachTab({ nav }: { nav: Nav }) {
         <textarea id="coach-reply" rows={4} placeholder="Incolla qui la risposta del coach" value={reply} onChange={(e) => setReply(e.target.value)} />
         {parsed?.kind === 'none' && parsed.error && <p className="error" role="alert">{parsed.error}</p>}
         {dayErr && <p className="error" role="alert">{dayErr}</p>}
+        {parsed?.kind === 'log' && (() => {
+          const b = buildLog(state, parsed.log)
+          if (!b.log) return <p className="error" role="alert">{b.error}</p>
+          const log = b.log
+          const dup = state.logs.some((x) => x.id === log.id)
+          return (
+            <div className="card diff">
+              {parsed.text && <p>{parsed.text}</p>}
+              <div className="card-title"><strong>Sessione da registrare: {log.dayName}</strong><span>{new Date(log.startedAt).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}</span></div>
+              <ul className="list">{log.entries.map((e) => <li key={e.name} className="diff-row"><strong>{e.name}</strong><span className="hint">{e.sets.map((x) => `${x.w == null ? '–' : fmtKg(x.w) + ' kg'} × ${x.r ?? '–'}`).join(', ')}</span></li>)}</ul>
+              {dup && <p className="hint">Questa sessione è già nell'archivio.</p>}
+              <div className="act-row">
+                <button className="btn btn-secondary" onClick={() => setReply('')}>Scarta</button>
+                <button className="btn btn-primary" disabled={dup} onClick={() => { dispatch({ type: 'importLog', log }); setReply(''); setMsg('Sessione registrata nell\'archivio.') }}>Registra sessione</button>
+              </div>
+            </div>
+          )
+        })()}
         {parsed?.kind === 'patch' && preview && (
           <div className="card diff">
             {parsed.text && <p>{parsed.text}</p>}

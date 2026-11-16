@@ -1,4 +1,4 @@
-import type { AppState, Day, Exercise, Program, SessionLog } from './types'
+import type { AppState, Day, Exercise, LoggedSet, Program, SessionLog } from './types'
 import { readiness, fmtSleep, dayKey, addDays, mesoWeek } from './wellness'
 import { fmtKg, fmtInt, logVolume, uid } from './lib'
 
@@ -68,16 +68,23 @@ export function nextMesoPrompt(s: AppState, now: Date = new Date()) {
 
 // ---------- Lettura della risposta del coach ----------
 export interface Change { exercise: string; sets?: number; reps?: string; weight?: number; technique?: string; rest?: number }
-export interface Patch { day: string; note?: string; changes?: Change[]; remove?: string[]; core_rounds?: number; minutes?: number }
-export type Parsed = { kind: 'patch'; patch: Patch; text: string } | { kind: 'program'; program: Program; text: string } | { kind: 'none'; text: string; error?: string }
+export interface AddEx { name: string; sets: number; reps: string; weight?: number | null; rest?: number; technique?: string; after?: string }
+export interface Patch { day: string; note?: string; changes?: Change[]; add?: AddEx[]; remove?: string[]; core_rounds?: number; minutes?: number }
+export interface LogIn { day: string; startedAt: string; durationMin?: number | null; coreRounds?: number; entries: { name: string; sets: (number | null)[][] | LoggedSet[] }[] }
+export type Parsed = { kind: 'log'; log: LogIn; text: string } | { kind: 'patch'; patch: Patch; text: string } | { kind: 'program'; program: Program; text: string } | { kind: 'none'; text: string; error?: string }
 
 export function parseCoach(raw: string): Parsed {
   const text = raw.trim()
-  const m = text.match(/```\s*alba-(patch|program)\s*([\s\S]*?)```/i)
+  const m = text.match(/```\s*alba-(patch|program|log)\s*([\s\S]*?)```/i)
   if (!m) return { kind: 'none', text, error: text ? 'Non trovo un blocco alba-patch o alba-program nella risposta.' : undefined }
   let j: unknown
   try { j = JSON.parse(m[2]) } catch { return { kind: 'none', text, error: 'Il blocco non è un JSON valido. Chiedi al coach di rimandarlo.' } }
   const prose = text.replace(m[0], '').trim()
+  if (m[1].toLowerCase() === 'log') {
+    const l = j as LogIn
+    if (!l || typeof l.day !== 'string' || !Array.isArray(l.entries) || typeof l.startedAt !== 'string') return { kind: 'none', text, error: 'Nel blocco alba-log mancano day, startedAt o entries.' }
+    return { kind: 'log', log: l, text: prose }
+  }
   if (m[1].toLowerCase() === 'patch') {
     const p = j as Patch
     if (!p || typeof p.day !== 'string') return { kind: 'none', text, error: 'Nel blocco manca il campo "day".' }
@@ -122,6 +129,13 @@ export function applyPatch(day: Day, patch: Patch, nowIso: string): { day: Day; 
     if (c.rest != null) e.rest = c.rest
     rows.push({ name: e.name, before, after: exLine(e) + (e.technique ? `, ${e.technique}` : '') })
   }
+  for (const a of patch.add ?? []) {
+    if (findEx(next, a.name)) { errors.push(`${a.name} è già nella sessione`); continue }
+    const ex: Exercise = { id: `${next.id}-x${uid()}`, name: a.name, sets: a.sets, reps: String(a.reps), weight: a.weight ?? null, weightNote: a.weight != null ? `partenza ${fmtKg(a.weight)} kg` : '', rest: a.rest ?? 90, technique: a.technique ?? '', group: null, isNew: false }
+    const at = a.after ? next.exercises.findIndex((e) => nn(e.name) === nn(a.after!)) : -1
+    next.exercises.splice(at >= 0 ? at + 1 : next.exercises.length, 0, ex)
+    rows.push({ name: a.name, before: 'non c\'era', after: exLine(ex) + (ex.technique ? `, ${ex.technique}` : '') })
+  }
   for (const r of patch.remove ?? []) {
     const e = findEx(next, r)
     if (!e) { errors.push(`Esercizio non trovato: ${r}`); continue }
@@ -131,4 +145,14 @@ export function applyPatch(day: Day, patch: Patch, nowIso: string): { day: Day; 
   if (patch.core_rounds != null && next.core) { rows.push({ name: 'Circuito addominali', before: `${next.core.rounds} giri`, after: `${patch.core_rounds} giri` }); next.core.rounds = patch.core_rounds }
   if (patch.minutes != null) { rows.push({ name: 'Durata prevista', before: `${next.minutes ?? '–'} min`, after: `${patch.minutes} min` }); next.minutes = patch.minutes }
   return { day: next, preview: { day: next, rows, errors } }
+}
+
+/** Trasforma una sessione scritta a mano in un registro dell'app, agganciata al giorno della scheda attiva. */
+export function buildLog(s: AppState, l: LogIn): { log: SessionLog | null; error?: string } {
+  const prog = s.programs.find((p) => p.status === 'active')
+  const day = prog && findDay(prog, l.day)
+  if (!prog || !day) return { log: null, error: `Non trovo il giorno "${l.day}" nella scheda attiva.` }
+  const entries = l.entries.map((e) => ({ name: e.name, sets: (e.sets as unknown[]).map((x) => (Array.isArray(x) ? { w: (x[0] as number | null) ?? null, r: (x[1] as number | null) ?? null } : (x as LoggedSet))) }))
+  const ms = l.durationMin != null ? l.durationMin * 60000 : null
+  return { log: { id: `log-${l.startedAt}-${prog.id}-${day.id}`, programId: prog.id, dayId: day.id, dayName: day.name, startedAt: l.startedAt, durationMs: ms, pausedMs: null, restMs: null, imported: true, coreRounds: l.coreRounds, entries } }
 }

@@ -34,6 +34,7 @@ export type Action =
   | { type: 'applyPatch'; programId: string; day: Day; note: string }
   | { type: 'revertPatch'; id: string }
   | { type: 'importProgram'; program: Program }
+  | { type: 'importLog'; log: SessionLog }
   | { type: 'setValue'; exId: string; idx: number; field: 'w' | 'r'; value: number | null }
   | { type: 'toggleSet'; exId: string; idx: number; restS: number; label: string }
   | { type: 'addSet'; exId: string }
@@ -165,6 +166,7 @@ function reduce(s: AppState, act: Action): AppState {
       if (!rec || rec.reverted) return s
       return { ...s, patches: s.patches.map((p) => (p.id === rec.id ? { ...p, reverted: true } : p)), programs: s.programs.map((p) => (p.id === rec.programId ? { ...p, days: p.days.map((d) => (d.id === rec.dayId ? rec.before : d)) } : p)) }
     }
+    case 'importLog': return s.logs.some((x) => x.id === act.log.id) ? s : { ...s, logs: [...s.logs, act.log].sort((a, b) => a.startedAt.localeCompare(b.startedAt)) }
     case 'importProgram': {
       const monday = new Date(); monday.setHours(0, 0, 0, 0)
       const wd = (monday.getDay() + 6) % 7
