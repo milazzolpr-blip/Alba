@@ -36,12 +36,18 @@ export function readiness(s: AppState, today: Date = new Date()): Readiness {
   if (now.hr != null && base.hr != null && now.hr - base.hr >= 4) { bad++; reasons.push(`frequenza a riposo ${Math.round(now.hr - base.hr)} bpm sopra la tua media`) }
   if (now.hrv != null && base.hrv != null && now.hrv <= base.hrv * 0.85) { bad++; reasons.push(`HRV ${Math.round((1 - now.hrv / base.hrv) * 100)}% sotto la tua media`) }
   const d = { sleep: now.sleep != null && base.sleep != null ? now.sleep - base.sleep : null, hr: now.hr != null && base.hr != null ? now.hr - base.hr : null, hrv: now.hrv != null && base.hrv != null ? (now.hrv / base.hrv - 1) * 100 : null }
+  // Un verdetto vale solo per i segnali che ci sono: se mancano, lo si dice.
+  const missing: string[] = []
+  if (now.sleep == null) missing.push('sonno')
+  if (now.hr == null || base.hr == null) missing.push('FC a riposo')
+  if (now.hrv == null || base.hrv == null) missing.push('HRV')
+  const partial = missing.length ? ` Valutazione parziale: mancano ${missing.join(' e ')}.` : ''
   const ci = s.checkins.find((c) => c.date === t)
   const extra = ci && (ci.energy <= 2 || ci.stress >= 4) ? ' Nel check-in hai segnato poca energia o stress alto: tienine conto.' : ''
-  if (bad === 0) return { level: 'good', title: 'Recupero buono', reasons: ['sonno, frequenza e HRV sono in linea con la tua media'], advice: 'Allenati come da scheda e prova a salire dove la regola di progressione lo permette.' + extra, latest, base, d }
-  if (bad === 1) return { level: 'fair', title: 'Recupero discreto', reasons, advice: 'Fai la sessione come da scheda, ma non forzare le serie oltre il tecnico.' + extra, latest, base, d }
-  if (bad === 2) return { level: 'partial', title: 'Recupero parziale', reasons, advice: 'Fai la sessione tenendo i carichi della volta scorsa e salta le tecniche più pesanti (rest-pause, cluster). Se domani i valori sono ancora così, chiedi al coach.' + extra, latest, base, d }
-  return { level: 'low', title: 'Recupero scarso', reasons, advice: 'Tre segnali su tre sono peggiori della tua media. Meglio una sessione molto leggera o il riposo: mandalo al coach prima di decidere.' + extra, latest, base, d }
+  if (bad === 0) return { level: 'good', title: 'Recupero buono', reasons: [missing.length ? `i segnali disponibili sono in linea con la tua media (mancano ${missing.join(' e ')})` : 'sonno, frequenza e HRV sono in linea con la tua media'], advice: 'Allenati come da scheda e prova a salire dove la regola di progressione lo permette.' + extra + partial, latest, base, d }
+  if (bad === 1) return { level: 'fair', title: 'Recupero discreto', reasons, advice: 'Fai la sessione come da scheda, ma non forzare le serie oltre il tecnico.' + extra + partial, latest, base, d }
+  if (bad === 2) return { level: 'partial', title: 'Recupero parziale', reasons, advice: 'Fai la sessione tenendo i carichi della volta scorsa e salta le tecniche più pesanti (rest-pause, cluster). Se domani i valori sono ancora così, chiedi al coach.' + extra + partial, latest, base, d }
+  return { level: 'low', title: 'Recupero scarso', reasons, advice: 'Tre segnali su tre sono peggiori della tua media. Meglio una sessione molto leggera o il riposo: mandalo al coach prima di decidere.' + extra + partial, latest, base, d }
 }
 
 export const levelColor: Record<Level, string> = { nodata: 'var(--muted)', good: 'var(--good)', fair: 'var(--dawn)', partial: 'var(--warn)', low: 'var(--bad)' }
