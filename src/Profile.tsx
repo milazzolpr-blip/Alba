@@ -44,14 +44,14 @@ export function Profile() {
     setBusy(true); setMsg('')
     try {
       const r = await hcRead(35)
-      dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays })
-      setMsg(r.entries.length ? `Letti ${r.entries.length} giorni da Health Connect.` : 'Health Connect non ha ancora dati di sonno, frequenza o HRV.')
+      dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions })
+      setMsg(r.entries.length ? `Letti ${r.entries.length} giorni da Health Connect${r.activity.length ? `, con ${r.activity.length} giorni di attività e ${r.sessions.length} allenamenti` : ''}.` : 'Health Connect non ha ancora dati di sonno, frequenza o HRV.')
     } catch (e) { setMsg(e instanceof Error ? e.message : 'Lettura non riuscita.') }
     setBusy(false)
   }
   const connectHc = async () => {
     setBusy(true); setMsg('')
-    try { const r = await hcRequest(); if (r.granted) await readHc(); else setMsg('Permessi non concessi: servono sonno, frequenza a riposo e HRV.') } catch (e) { setMsg(e instanceof Error ? e.message : 'Collegamento non riuscito.') }
+    try { const r = await hcRequest(); if (r.granted) await readHc(); else setMsg('Permessi non concessi: servono almeno sonno e frequenza a riposo. Passi e allenamenti sono facoltativi.') } catch (e) { setMsg(e instanceof Error ? e.message : 'Collegamento non riuscito.') }
     setBusy(false)
   }
   const reminder = () => {
@@ -76,7 +76,7 @@ export function Profile() {
               {hc === 'update' && <p className="hint">Health Connect va installato o aggiornato dal Play Store.</p>}
               <button className="btn btn-primary btn-wide" disabled={busy || hc === 'unsupported'} onClick={connectHc}>{state.hcLast ? 'Ridai i permessi' : 'Collega Health Connect'}</button>
               <button className="btn btn-secondary btn-wide" disabled={busy} onClick={readHc}>Aggiorna adesso</button>
-              {state.hcLast && <p className="hint">Ultima lettura {fmtDate(state.hcLast.at, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}. Trovati: sonno {state.hcLast.sleep} notti, frequenza a riposo {state.hcLast.hr} misure, HRV {state.hcLast.hrv} giorni. Se HRV è 0, Zepp non lo sta mandando a Health Connect: puoi inserirlo a mano.</p>}
+              {state.hcLast && <p className="hint">Ultima lettura {fmtDate(state.hcLast.at, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}. Trovati: sonno {state.hcLast.sleep} notti, frequenza a riposo {state.hcLast.hr} misure, HRV {state.hcLast.hrv} giorni. Se HRV è 0, Zepp non lo sta mandando a Health Connect: puoi inserirlo a mano.{state.hcLast.activity != null && ` Attività: ${state.hcLast.activity ? `${state.hcLast.steps ?? 0} giorni con passi, ${state.hcLast.sessions ?? 0} allenamenti.` : 'Zepp non ha mandato passi, calorie o allenamenti, oppure non hai concesso i permessi: tocca «Ridai i permessi».'}`}</p>}
               <button className="link" onClick={() => hcOpenSettings().catch(() => {})}>Apri le impostazioni di Health Connect</button>
             </>
           ) : (
@@ -85,6 +85,9 @@ export function Profile() {
           <div className="form"><label>Ore di sonno desiderate
             <select value={state.settings.sleepTargetMin} onChange={(e) => dispatch({ type: 'setSleepTarget', min: Number(e.target.value) })}>
               {[360, 390, 420, 450, 480].map((m) => <option key={m} value={m}>{fmtSleep(m)}</option>)}</select></label></div>
+          <div className="form"><label>Obiettivo passi al giorno
+            <select id="step-goal" value={state.settings.stepGoal ?? 9500} onChange={(e) => dispatch({ type: 'setStepGoal', steps: Number(e.target.value) })}>
+              {[8000, 9000, 9500, 10000, 12000].map((n) => <option key={n} value={n}>{n.toLocaleString('it-IT')}</option>)}</select></label></div>
           <button className="btn btn-secondary btn-wide" onClick={reminder}>Promemoria alle 21:00 nel calendario</button>
           <p className="hint">Il promemoria "Domani ti alleni?" passa dal calendario del telefono, perché un'app web non può avvisarti da sola.</p>
         </div>

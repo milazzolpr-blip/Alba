@@ -122,7 +122,7 @@ export function ProgramEditor({ id, nav }: { id: string | null; nav: Nav }) {
   }
   const save = () => {
     if (!p.name.trim()) return setError('Dai un nome alla scheda prima di salvarla.')
-    const days = p.days.map((d) => ({ ...d, exercises: d.exercises.filter((e) => e.name.trim()).map((e) => ({ ...e, weightNote: e.weight != null ? e.weightNote || `${e.weight.toLocaleString('it-IT')} kg` : e.weightNote })) })).filter((d) => d.exercises.length)
+    const days = p.days.map((d) => ({ ...d, core: d.core && d.core.items.some((c) => c.name.trim()) ? { ...d.core, items: d.core.items.filter((c) => c.name.trim()) } : undefined, exercises: d.exercises.filter((e) => e.name.trim()).map((e) => ({ ...e, weightNote: e.weight != null ? e.weightNote || `${e.weight.toLocaleString('it-IT')} kg` : e.weightNote })) })).filter((d) => d.exercises.length)
     if (!days.length) return setError('Aggiungi almeno un esercizio con un nome.')
     dispatch({ type: 'saveProgram', program: { ...p, days } }); nav.replace({ k: 'program', id: p.id })
   }
@@ -168,6 +168,37 @@ export function ProgramEditor({ id, nav }: { id: string | null; nav: Nav }) {
             </div>
           ))}
           <button className="btn btn-secondary btn-wide" onClick={() => setDay(i, { exercises: [...d.exercises, blankEx()] })}><Icon name="plus" size={16} />Aggiungi esercizio</button>
+          {d.core ? (
+            <div className="edit-core">
+              <div className="card-title"><strong>Circuito addominali</strong>
+                <button className="link" onClick={() => setDay(i, { core: undefined })}>Togli circuito</button></div>
+              <div className="edit-grid">
+                <label>Giri<input id={`c-${d.id}-rounds`} inputMode="numeric" value={d.core.rounds} onChange={(ev) => setDay(i, { core: { ...d.core!, rounds: Math.max(1, Number(ev.target.value) || 1) } })} /></label>
+                <label>Recupero s<input id={`c-${d.id}-rest`} inputMode="numeric" value={d.core.rest} onChange={(ev) => setDay(i, { core: { ...d.core!, rest: Math.max(0, Number(ev.target.value) || 0) } })} /></label>
+              </div>
+              {d.core.items.map((c, k) => {
+                const setC = (patch: Partial<typeof c>) => setDay(i, { core: { ...d.core!, items: d.core!.items.map((x, j) => (j === k ? { ...x, ...patch } : x)) } })
+                const mv = (dir: number) => { const list = [...d.core!.items]; const t = k + dir; if (t < 0 || t >= list.length) return; [list[k], list[t]] = [list[t], list[k]]; setDay(i, { core: { ...d.core!, items: list } }) }
+                return (
+                  <div className="edit-ex" key={k}>
+                    <div className="edit-ex-top">
+                      <input id={`c-${d.id}-${k}-name`} aria-label="Nome esercizio del circuito" placeholder="Nome esercizio" value={c.name} onChange={(ev) => setC({ name: ev.target.value })} />
+                      <button className="icon-btn" aria-label="Sposta su" onClick={() => mv(-1)}><Icon name="up" size={16} /></button>
+                      <button className="icon-btn" aria-label="Sposta giù" onClick={() => mv(1)}><Icon name="down" size={16} /></button>
+                      <button className="icon-btn danger" aria-label="Elimina esercizio del circuito" onClick={() => setDay(i, { core: { ...d.core!, items: d.core!.items.filter((_, j) => j !== k) } })}><Icon name="trash" size={16} /></button>
+                    </div>
+                    <div className="core-edit-item">
+                      <label>Quantità<input id={`c-${d.id}-${k}-t`} value={c.target} placeholder="12 per lato" onChange={(ev) => setC({ target: ev.target.value })} /></label>
+                      <label>Note<input id={`c-${d.id}-${k}-cue`} value={c.cue} onChange={(ev) => setC({ cue: ev.target.value })} /></label>
+                    </div>
+                  </div>
+                )
+              })}
+              <button className="btn btn-secondary btn-wide" onClick={() => setDay(i, { core: { ...d.core!, items: [...d.core!.items, { name: '', target: '12 rip.', cue: '' }] } })}><Icon name="plus" size={16} />Aggiungi esercizio al circuito</button>
+            </div>
+          ) : (
+            <button className="btn btn-secondary btn-wide" onClick={() => setDay(i, { core: { rounds: 4, rest: 60, items: [{ name: '', target: '12 rip.', cue: '' }] } })}><Icon name="plus" size={16} />Aggiungi circuito addominali</button>
+          )}
         </section>
       ))}
       <button className="btn btn-secondary btn-wide" onClick={() => setP({ ...p, days: [...p.days, blankDay(p.days.length + 1)] })}><Icon name="plus" size={16} />Aggiungi giorno</button>

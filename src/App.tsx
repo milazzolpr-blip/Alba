@@ -39,7 +39,7 @@ function Shell() {
   // App Android: a ogni apertura legge da Health Connect, se i permessi sono già dati.
   useEffect(() => {
     if (!isNative) return
-    hcCheck().then((c) => (c.granted ? hcRead(35) : null)).then((r) => { if (r) dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays }) }).catch(() => {})
+    hcCheck().then((c) => (c.granted ? hcRead(35) : null)).then((r) => { if (r) dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions }) }).catch(() => {})
   }, [dispatch])
   useEffect(() => { window.scrollTo(0, 0) }, [tab, stack.length])
 

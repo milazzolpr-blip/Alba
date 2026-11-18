@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useReducer, type Dispatch, type ReactNode } from 'react'
 import seed from './seed.json'
-import type { ActiveSession, AppState, Day, Program, SessionLog, StravaAuth } from './types'
+import type { Activity, HcSession, ActiveSession, ActiveSet, AppState, Day, Exercise, LoggedSet, Program, SessionLog, StravaAuth } from './types'
 import { exerciseHistory, repsFirst, uid } from './lib'
 import { dayKey, mesoWeek } from './wellness'
 import type { CheckIn, Tomorrow, Wellness } from './types'
@@ -10,13 +10,59 @@ const initial = (): AppState => ({
   ...(seed as unknown as Pick<AppState, 'programs' | 'logs'>), active: null, strava: null, lastSync: null,
   wellness: [], checkins: [], tomorrow: null, patches: [], lastCopyAt: null, hcLast: null,
   meso: { number: 7, startDate: '2026-11-16', trainWeeks: 5 },
-  settings: { sleepTargetMin: 420 },
+  settings: { sleepTargetMin: 420, stepGoal: 9500 },
+  activity: [], hcSessions: [],
 })
+
+/** Le schede salvate sul telefono non si aggiornano da sole: se il seed ha il circuito addominali e la tua copia no, lo aggiunge. */
+const CONSOLIDATED = ['m7-1-supine-press', 'm7-2-hack-squat']
+function backfill(s: AppState): AppState {
+  const seeds = (seed as unknown as { programs: Program[] }).programs
+  const programs = s.programs.map((p) => {
+    const sp = seeds.find((x) => x.id === p.id)
+    if (!sp) return p
+    return { ...p, days: p.days.map((d) => {
+      const sd = sp.days.find((x) => x.id === d.id)
+      return sd?.core && !d.core ? { ...d, core: structuredClone(sd.core) } : d
+    }) }
+  })
+  // Esercizi entrati nella scheda del mese (Supine press, Hack squat): si aggiungono una sola volta, poi sono parte del mesociclo.
+  const applied = new Set(s.seedApplied ?? [])
+  const merged = programs.map((p) => {
+    const sp = seeds.find((x) => x.id === p.id)
+    if (!sp || p.id !== 'm7') return p
+    return { ...p, days: p.days.map((d) => {
+      const sd = sp.days.find((x) => x.id === d.id)
+      if (!sd) return d
+      let exs = d.exercises
+      sd.exercises.forEach((se, i) => {
+        if (!CONSOLIDATED.includes(se.id) || applied.has(se.id)) return
+        applied.add(se.id)
+        if (exs.some((e) => e.id === se.id || e.name.toLowerCase() === se.name.toLowerCase())) return
+        const prev = sd.exercises[i - 1]
+        const at = prev ? exs.findIndex((e) => e.name === prev.name) : -1
+        exs = [...exs.slice(0, at >= 0 ? at + 1 : exs.length), structuredClone(se), ...exs.slice(at >= 0 ? at + 1 : exs.length)]
+      })
+      return exs === d.exercises ? d : { ...d, exercises: exs }
+    }) }
+  })
+  const ALIGN = 'align-m7-g4-loads'
+  const aligned = applied.has(ALIGN) ? merged : merged.map((p) => (p.id !== 'm7' ? p : { ...p, days: p.days.map((d) => (d.id !== 'm7-g4' ? d : { ...d, exercises: d.exercises.map((e) => (e.name === 'Leg press' && (e.weight ?? 0) < 235 ? { ...e, weight: 235, weightNote: '235 kg' } : e.name === 'Shoulder press' && (e.weight ?? 0) < 42.5 ? { ...e, weight: 42.5, weightNote: '42,5 kg' } : e)) })) }))
+  applied.add(ALIGN)
+  // Le modifiche del coach che hanno aggiunto esercizi ora presenti nella scheda sono consolidate: non si annullano più.
+  const patches = s.patches.map((pt) => {
+    if (pt.reverted || pt.consolidated) return pt
+    const day = aligned.find((p) => p.id === pt.programId)?.days.find((x) => x.id === pt.dayId)
+    const added = day ? day.exercises.filter((e) => !pt.before.exercises.some((b) => b.name === e.name)) : []
+    return added.length && added.every((e) => day!.exercises.some((x) => x.name === e.name)) ? { ...pt, consolidated: true } : pt
+  })
+  return { ...s, programs: aligned, patches, seedApplied: [...applied] }
+}
 
 function load(): AppState {
   try {
     const raw = localStorage.getItem(KEY)
-    if (raw) return { ...initial(), ...JSON.parse(raw) }
+    if (raw) return backfill({ ...initial(), ...JSON.parse(raw) })
   } catch { /* archivio del browser non disponibile: si parte dai dati iniziali */ }
   return initial()
 }
@@ -30,7 +76,8 @@ export type Action =
   | { type: 'setMeso'; startDate?: string; number?: number; trainWeeks?: number }
   | { type: 'setSleepTarget'; min: number }
   | { type: 'copied' }
-  | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number }
+  | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number; activity?: Activity[]; sessions?: HcSession[] }
+  | { type: 'setStepGoal'; steps: number }
   | { type: 'applyPatch'; programId: string; day: Day; note: string }
   | { type: 'revertPatch'; id: string }
   | { type: 'importProgram'; program: Program }
@@ -44,6 +91,10 @@ export type Action =
   | { type: 'pause' }
   | { type: 'resume' }
   | { type: 'coreRound'; restS: number }
+  | { type: 'startCore' }
+  | { type: 'setCoreItem'; idx: number; patch: { target?: string; w?: number | null } }
+  | { type: 'addExtra'; exercise: Exercise; sets: ActiveSet[]; keep: boolean }
+  | { type: 'editLog'; id: string; add: { name: string; sets: LoggedSet[] }[]; core?: SessionLog['core']; coreRounds?: number; durationMin?: number | null }
   | { type: 'finish' }
   | { type: 'discard' }
   | { type: 'saveProgram'; program: Program }
@@ -80,7 +131,7 @@ function reduce(s: AppState, act: Action): AppState {
         else if (light && n >= 3) n -= 1
         sets[ex.id] = Array.from({ length: n }, () => ({ w, r: repsFirst(ex.reps) || null, done: false }))
       }
-      return { ...s, active: { programId: act.program.id, dayId: act.day.id, startedAt: now, activeMs: 0, resumedAt: now, pausedMs: 0, pausedAt: null, restMs: 0, rest: null, sets, coreRounds: 0 } }
+      return { ...s, active: { programId: act.program.id, dayId: act.day.id, startedAt: now, activeMs: 0, resumedAt: now, pausedMs: 0, pausedAt: null, restMs: 0, rest: null, sets, coreRounds: 0, extra: [], core: act.day.core ? structuredClone(act.day.core.items) : undefined } }
     }
     case 'setValue': {
       if (!a) return s
@@ -119,13 +170,30 @@ function reduce(s: AppState, act: Action): AppState {
       const base = closeRest(a, now)
       return { ...s, active: { ...base, coreRounds: a.coreRounds + 1, rest: act.restS ? { startedAt: a.resumedAt ? now : null, accMs: 0, plannedMs: act.restS * 1000, label: 'Recupero tra i giri', buzzed: false } : null } }
     }
+    case 'startCore': return a ? { ...s, active: closeRest(a, now) } : s
+    case 'setCoreItem': {
+      if (!a?.core) return s
+      return { ...s, active: { ...a, core: a.core.map((it, i) => (i === act.idx ? { ...it, ...act.patch } : it)) } }
+    }
+    case 'addExtra': {
+      if (!a) return s
+      return { ...s, active: { ...a, extra: [...(a.extra ?? []), act.exercise], sets: { ...a.sets, [act.exercise.id]: act.sets } }, ...(act.keep ? { programs: s.programs.map((p) => (p.id === a.programId ? { ...p, days: p.days.map((d) => (d.id === a.dayId ? { ...d, exercises: [...d.exercises, act.exercise] } : d)) } : p)) } : {}) }
+    }
+    case 'editLog': {
+      return { ...s, logs: s.logs.map((l) => {
+        if (l.id !== act.id) return l
+        const entries = [...l.entries, ...act.add.filter((e) => e.sets.length)]
+        const durationMs = act.durationMin != null ? act.durationMin * 60000 : l.durationMs
+        return { ...l, entries, core: act.core ?? l.core, coreRounds: act.coreRounds ?? l.coreRounds, durationMs, restMs: null }
+      }) }
+    }
     case 'finish': {
       if (!a) return s
       const done = closeRest(a, now)
       const program = s.programs.find((p) => p.id === a.programId)
       const day = program?.days.find((d) => d.id === a.dayId)
       if (!day) return { ...s, active: null }
-      const entries = day.exercises
+      const entries = [...day.exercises, ...(a.extra ?? []).filter((x) => !day.exercises.some((y) => y.id === x.id))]
         .map((ex) => ({ name: ex.name, sets: done.sets[ex.id].filter((x) => x.done).map(({ w, r }) => ({ w, r })) }))
         .filter((e) => e.sets.length)
       const log: SessionLog = {
@@ -134,8 +202,11 @@ function reduce(s: AppState, act: Action): AppState {
         durationMs: done.activeMs + (done.resumedAt ? now - done.resumedAt : 0),
         pausedMs: done.pausedMs + (done.pausedAt ? now - done.pausedAt : 0),
         restMs: done.restMs, coreRounds: done.coreRounds || undefined, entries,
+        core: done.coreRounds && done.core ? done.core.map((c) => ({ name: c.name, target: c.target, w: c.w ?? null })) : undefined,
       }
-      return { ...s, active: null, logs: [...s.logs, log] }
+      // I valori del circuito di oggi diventano la base per la prossima volta.
+      const programs = done.core && done.coreRounds ? s.programs.map((p) => (p.id === a.programId ? { ...p, days: p.days.map((d) => (d.id === a.dayId && d.core ? { ...d, core: { ...d.core, items: done.core! } } : d)) } : p)) : s.programs
+      return { ...s, active: null, programs, logs: [...s.logs, log] }
     }
     case 'discard': return { ...s, active: null }
     case 'addWellness': return { ...s, wellness: [...s.wellness.filter((w) => w.date !== act.entry.date), act.entry].sort((a, b) => a.date.localeCompare(b.date)) }
@@ -143,6 +214,7 @@ function reduce(s: AppState, act: Action): AppState {
     case 'saveCheckin': return { ...s, checkins: [...s.checkins.filter((c) => c.date !== act.entry.date), act.entry].sort((a, b) => a.date.localeCompare(b.date)) }
     case 'setTomorrow': return { ...s, tomorrow: act.value }
     case 'setMeso': return { ...s, meso: { ...s.meso, ...(act.startDate ? { startDate: act.startDate } : {}), ...(act.number ? { number: act.number } : {}), ...(act.trainWeeks ? { trainWeeks: act.trainWeeks } : {}) } }
+    case 'setStepGoal': return { ...s, settings: { ...s.settings, stepGoal: act.steps } }
     case 'setSleepTarget': return { ...s, settings: { ...s.settings, sleepTargetMin: act.min } }
     case 'mergeHealth': {
       const by = new Map(s.wellness.map((w) => [w.date, w]))
@@ -151,7 +223,25 @@ function reduce(s: AppState, act: Action): AppState {
         // I valori dell'orologio sostituiscono quelli a mano solo dove ci sono.
         by.set(e.date, { date: e.date, sleepMin: e.sleepMin ?? o?.sleepMin ?? null, restHr: e.restHr ?? o?.restHr ?? null, hrv: e.hrv ?? o?.hrv ?? null, source: 'healthconnect' })
       }
-      return { ...s, wellness: [...by.values()].sort((a, b) => a.date.localeCompare(b.date)), hcLast: { at: new Date().toISOString(), days: act.entries.length, sleep: act.sleep, hr: act.hr, hrv: act.hrv } }
+      const ab = new Map((s.activity ?? []).map((a) => [a.date, a]))
+      for (const a of act.activity ?? []) ab.set(a.date, a)
+      const sb = new Map((s.hcSessions ?? []).map((x) => [x.id, x]))
+      for (const x of act.sessions ?? []) sb.set(x.id, x)
+      const hcSessions = [...sb.values()].sort((a, b) => a.start.localeCompare(b.start)).slice(-120)
+      // Abbina a ogni sessione dell'app l'allenamento dell'orologio con più sovrapposizione di orario.
+      const logs = s.logs.map((l) => {
+        if (l.watch || l.durationMs == null) return l
+        const a0 = new Date(l.startedAt).getTime(), a1 = a0 + l.durationMs
+        let best: HcSession | null = null, bestO = 0
+        for (const x of hcSessions) {
+          const o = Math.min(a1, new Date(x.end).getTime()) - Math.max(a0, new Date(x.start).getTime())
+          const shorter = Math.min(a1 - a0, new Date(x.end).getTime() - new Date(x.start).getTime())
+          if (o > 0 && o >= shorter * 0.5 && o > bestO) { best = x; bestO = o }
+        }
+        return best && (best.avgHr != null || best.kcal != null) ? { ...l, watch: { avgHr: best.avgHr, maxHr: best.maxHr, kcal: best.kcal } } : l
+      })
+      return { ...s, logs, wellness: [...by.values()].sort((a, b) => a.date.localeCompare(b.date)), activity: [...ab.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-60), hcSessions,
+        hcLast: { at: new Date().toISOString(), days: act.entries.length, sleep: act.sleep, hr: act.hr, hrv: act.hrv, steps: (act.activity ?? []).filter((a) => a.steps != null).length, sessions: (act.sessions ?? []).length, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0) } }
     }
     case 'copied': return { ...s, lastCopyAt: new Date().toISOString() }
     case 'applyPatch': {
@@ -201,3 +291,5 @@ export function useStore() {
   if (!c) throw new Error('StoreProvider mancante')
   return c
 }
+
+export { reduce }

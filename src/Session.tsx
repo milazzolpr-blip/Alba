@@ -3,6 +3,7 @@ import { useStore } from './store'
 import { ConfirmButton, Icon, Ring, useNow } from './ui'
 import { exerciseHistory, fmtClock, fmtDate, fmtKg, fmtRest } from './lib'
 import type { ActiveSet, Exercise } from './types'
+import { uid } from './lib'
 
 function Stepper({ id, value, step, onChange, label }: { id: string; value: number | null; step: number; onChange: (v: number | null) => void; label: string }) {
   const bump = (d: number) => onChange(Math.max(0, Math.round(((value ?? 0) + d) * 100) / 100))
@@ -60,6 +61,36 @@ function ExerciseCard({ ex, sets, nextLabel }: { ex: Exercise; sets: ActiveSet[]
   )
 }
 
+function AddExtra() {
+  const { dispatch } = useStore()
+  const [open, setOpen] = useState(false)
+  const [f, setF] = useState({ name: '', sets: '3', reps: '10', w: '', rest: '90', keep: true })
+  const num = (v: string) => (v === '' || isNaN(Number(v.replace(',', '.'))) ? null : Number(v.replace(',', '.')))
+  if (!open) return <button className="ghost-add" onClick={() => setOpen(true)}><Icon name="plus" size={16} />Aggiungi esercizio a questa sessione</button>
+  const add = () => {
+    if (!f.name.trim()) return
+    const w = num(f.w), n = Math.max(1, Number(f.sets) || 1)
+    const ex: Exercise = { id: `x-${uid()}`, name: f.name.trim(), sets: n, reps: f.reps || '10', weight: w, weightNote: w != null ? `${w.toLocaleString('it-IT')} kg` : '', rest: Math.max(0, Number(f.rest) || 0), technique: '', group: null, isNew: true }
+    dispatch({ type: 'addExtra', exercise: ex, sets: Array.from({ length: n }, () => ({ w, r: Number(f.reps) || null, done: false })), keep: f.keep })
+    setOpen(false); setF({ name: '', sets: '3', reps: '10', w: '', rest: '90', keep: true })
+  }
+  return (
+    <article className="ex add-extra">
+      <div className="form">
+        <label>Esercizio<input id="x-name" value={f.name} placeholder="Es. Hack squat" onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
+        <div className="edit-grid">
+          <label>Serie<input id="x-sets" inputMode="numeric" value={f.sets} onChange={(e) => setF({ ...f, sets: e.target.value })} /></label>
+          <label>Ripetizioni<input id="x-reps" value={f.reps} onChange={(e) => setF({ ...f, reps: e.target.value })} /></label>
+          <label>Peso kg<input id="x-w" inputMode="decimal" value={f.w} onChange={(e) => setF({ ...f, w: e.target.value })} /></label>
+          <label>Recupero s<input id="x-rest" inputMode="numeric" value={f.rest} onChange={(e) => setF({ ...f, rest: e.target.value })} /></label>
+        </div>
+        <label className="check-row"><input id="x-keep" type="checkbox" checked={f.keep} onChange={(e) => setF({ ...f, keep: e.target.checked })} />Tienilo anche nella scheda</label>
+        <div className="act-row"><button className="btn btn-primary" onClick={add}>Aggiungi</button><button className="btn btn-secondary" onClick={() => setOpen(false)}>Annulla</button></div>
+      </div>
+    </article>
+  )
+}
+
 export function Session({ onClose, onFinished }: { onClose: () => void; onFinished: (logId: string) => void }) {
   const { state, dispatch } = useStore()
   const a = state.active
@@ -89,7 +120,8 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
   if (!a || !day) return null
   const paused = !a.resumedAt
   const elapsed = a.activeMs + (a.resumedAt ? now - a.resumedAt : 0)
-  const all = day.exercises.flatMap((e) => a.sets[e.id] ?? [])
+  const exList = [...day.exercises, ...(a.extra ?? []).filter((x) => !day.exercises.some((y) => y.id === x.id))]
+  const all = exList.flatMap((e) => a.sets[e.id] ?? [])
   const doneSets = all.filter((s) => s.done).length
   const budget = (day.minutes ?? 0) * 60000
   const finish = () => { const id = `log-${a.startedAt}`; dispatch({ type: 'finish' }); onFinished(id) }
@@ -124,8 +156,8 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
           </section>
         )}
 
-        {day.exercises.map((ex, i) => {
-          const prev = day.exercises[i - 1], next = day.exercises[i + 1]
+        {exList.map((ex, i) => {
+          const prev = exList[i - 1], next = exList[i + 1]
           const startsGroup = ex.group && prev?.group !== ex.group || (ex.group && prev?.group === ex.group && prev.rest > 0)
           return (
             <div key={ex.id} className={ex.group ? 'grouped' : ''}>
@@ -135,6 +167,8 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
           )
         })}
 
+        <AddExtra />
+
         {day.core && (
           <article className="ex core">
             <div className="ex-head as-static">
@@ -142,8 +176,18 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
               <span className="ex-title"><strong>Circuito addominali</strong><span>{day.core.rounds} giri, nessuna pausa tra gli esercizi, {day.core.rest} s a fine giro</span></span>
             </div>
             <ol className="core-list">
-              {day.core.items.map((it) => (<li key={it.name}><strong>{it.name}</strong><span className="core-target">{it.target}</span><span className="core-cue">{it.cue}</span></li>))}
+              {(a.core ?? day.core.items).map((it, i) => (
+                <li key={`${it.name}-${i}`}>
+                  <strong>{it.name}</strong>
+                  <span className="core-vals">
+                    <input id={`core-t-${i}`} className="core-in" aria-label={`Quantità ${it.name}`} value={it.target} onChange={(e) => dispatch({ type: 'setCoreItem', idx: i, patch: { target: e.target.value } })} />
+                    <input id={`core-w-${i}`} className="core-in core-kg" inputMode="decimal" aria-label={`Peso ${it.name}, kg`} placeholder="kg" value={it.w ?? ''} onChange={(e) => { const v = e.target.value.replace(',', '.'); dispatch({ type: 'setCoreItem', idx: i, patch: { w: v === '' || isNaN(Number(v)) ? null : Number(v) } }) }} />
+                  </span>
+                  {it.cue && <span className="core-cue">{it.cue}</span>}
+                </li>
+              ))}
             </ol>
+            {a.coreRounds === 0 && <button className="link core-start" onClick={() => dispatch({ type: 'startCore' })}>Inizia il circuito: chiudi il recupero</button>}
             <button className="btn btn-secondary btn-wide" disabled={a.coreRounds >= day.core.rounds} onClick={() => dispatch({ type: 'coreRound', restS: a.coreRounds + 1 < day.core!.rounds ? day.core!.rest : 0 })}>
               {a.coreRounds >= day.core.rounds ? 'Circuito completato' : `Giro ${a.coreRounds + 1} completato`}
             </button>

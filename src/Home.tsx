@@ -2,6 +2,7 @@ import { useStore } from './store'
 import { Icon, Spark, Stat, useNow } from './ui'
 import { allExerciseNames, exerciseHistory, fmtClock, fmtDate, fmtInt, fmtKg, fmtMin, logSets, logVolume, mondayOf, nextUp, readyToProgress } from './lib'
 import type { Nav } from './App'
+import { isGym, isNative, sessionLabel } from './health'
 import { dayKey, fmtSleep, levelColor, mesoWeek, readiness } from './wellness'
 
 const DAYS = ['L', 'M', 'M', 'G', 'V', 'S', 'D']
@@ -150,6 +151,41 @@ export function Home({ nav }: { nav: Nav }) {
   )
 }
 
+function ActivityBlock({ nav }: { nav: Nav }) {
+  const { state } = useStore()
+  const goal = state.settings.stepGoal ?? 9500
+  const acts = state.activity ?? []
+  const today = acts.find((a) => a.date === dayKey())
+  const since = Date.now() - 7 * 86400000
+  const others = (state.hcSessions ?? []).filter((x) => !isGym(x.type) && new Date(x.start).getTime() > since).slice(-4).reverse()
+  const noData = isNative && state.hcLast && state.hcLast.activity === false
+  if (!today && !others.length && !noData) return null
+  if (!today && !others.length) return <button className="card card-tap coach-note" onClick={() => nav.tab('profile')}><strong className="brass">Passi e allenamenti non arrivano</strong><span>Zepp non li manda a Health Connect, oppure mancano i permessi. Tocca per controllare.</span></button>
+  const pct = today?.steps != null ? Math.min(100, Math.round((today.steps / goal) * 100)) : 0
+  const yday = new Date(Date.now() - 86400000).getTime()
+  const heavy = (state.hcSessions ?? []).some((x) => !isGym(x.type) && new Date(x.end).getTime() > yday - 86400000 && new Date(x.end).getTime() - new Date(x.start).getTime() >= 90 * 60000)
+  const fmt = (n: number | null) => (n == null ? '–' : fmtInt(n))
+  return (
+    <section className="card activity">
+      <div className="card-title"><span className="hint">Attività, dall'orologio</span></div>
+      {today && (
+        <>
+          <div className="metrics">
+            <div className="metric"><span>Passi</span><strong>{fmt(today.steps)}</strong><em>{today.steps != null ? `${pct}% di ${fmtInt(goal)}` : ' '}</em></div>
+            <div className="metric"><span>Kcal attive</span><strong>{fmt(today.activeKcal)}</strong><em>{today.totalKcal != null ? `${fmt(today.totalKcal)} totali` : ' '}</em></div>
+            <div className="metric"><span>Distanza</span><strong>{today.distanceM != null ? (today.distanceM / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 }) : '–'}<small> km</small></strong><em> </em></div>
+          </div>
+          <div className="bar" role="progressbar" aria-valuenow={pct} aria-valuemin={0} aria-valuemax={100} aria-label="Passi di oggi rispetto all'obiettivo"><i style={{ width: `${pct}%` }} /></div>
+        </>
+      )}
+      {others.map((x) => (
+        <div className="act-line" key={x.id}><strong>{sessionLabel(x)}</strong><span>{new Date(x.start).toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric' })}, {Math.round((new Date(x.end).getTime() - new Date(x.start).getTime()) / 60000)} min{x.distanceM ? `, ${(x.distanceM / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 })} km` : ''}{x.avgHr ? `, FC ${x.avgHr}` : ''}</span></div>
+      ))}
+      {heavy && <div className="advice"><strong>Carico dei giorni scorsi</strong><span>Un'attività lunga nelle ultime 48 ore: se le gambe sono cariche, dillo nel check-in.</span></div>}
+    </section>
+  )
+}
+
 function Wellbeing({ nav }: { nav: Nav }) {
   const { state } = useStore()
   const r = readiness(state)
@@ -185,6 +221,8 @@ function Wellbeing({ nav }: { nav: Nav }) {
           {r.level !== 'nodata' && <button className="btn btn-secondary" onClick={() => nav.go({ k: 'wellness' })}>Aggiungi dati</button>}
         </div>
       </section>
+
+      <ActivityBlock nav={nav} />
 
       {patch && <button className="card card-tap coach-note" onClick={() => nav.tab('coach')}><strong className="brass">Il coach ha modificato {patch.dayName}</strong><span>{patch.note || 'Modifica applicata'}</span></button>}
       {unsent && <button className="card card-tap coach-note" onClick={() => nav.tab('coach')}><strong className="brass">Hai dati nuovi per il coach</strong><span>Copia il riepilogo e mandalo in chat per ricevere indicazioni.</span></button>}

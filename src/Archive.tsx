@@ -3,6 +3,7 @@ import { useStore } from './store'
 import { ConfirmButton, Icon, Spark, Stat, TopBar } from './ui'
 import { allExerciseNames, exerciseHistory, fmtClock, fmtDate, fmtInt, fmtKg, logSets, logVolume } from './lib'
 import type { Nav } from './App'
+import type { SessionLog } from './types'
 
 export function Archive({ nav }: { nav: Nav }) {
   const { state } = useStore()
@@ -64,6 +65,65 @@ export function Archive({ nav }: { nav: Nav }) {
   )
 }
 
+function EditLog({ l }: { l: SessionLog }) {
+  const { state, dispatch } = useStore()
+  const [open, setOpen] = useState(false)
+  const day = state.programs.find((p) => p.id === l.programId)?.days.find((d) => d.id === l.dayId)
+  const [x, setX] = useState({ name: '', sets: '3', reps: '12', w: '' })
+  const [added, setAdded] = useState<{ name: string; sets: { w: number | null; r: number | null }[] }[]>([])
+  const [rounds, setRounds] = useState(String(l.coreRounds ?? day?.core?.rounds ?? 4))
+  const [coreOn, setCoreOn] = useState(!l.core && !!day?.core)
+  const [items, setItems] = useState(() => (day?.core?.items ?? []).map((c) => ({ name: c.name, target: c.target, w: c.w != null ? String(c.w) : '' })))
+  const [dur, setDur] = useState(l.durationMs != null ? String(Math.round(l.durationMs / 60000)) : '')
+  const num = (v: string) => (v === '' || isNaN(Number(v.replace(',', '.'))) ? null : Number(v.replace(',', '.')))
+  if (!open) return <button className="btn btn-secondary btn-wide" onClick={() => setOpen(true)}>Correggi sessione</button>
+  const addEx = () => {
+    if (!x.name.trim()) return
+    const w = num(x.w), r = Number(x.reps) || null
+    setAdded([...added, { name: x.name.trim(), sets: Array.from({ length: Math.max(1, Number(x.sets) || 1) }, () => ({ w, r })) }])
+    setX({ name: '', sets: '3', reps: '12', w: '' })
+  }
+  const save = () => {
+    dispatch({ type: 'editLog', id: l.id, add: added, durationMin: num(dur),
+      ...(coreOn && items.length ? { coreRounds: Number(rounds) || 0, core: items.map((c) => ({ name: c.name, target: c.target, w: num(c.w) })) } : {}) })
+    setOpen(false); setAdded([])
+  }
+  return (
+    <section className="card edit-log">
+      <div className="card-title"><strong>Correggi sessione</strong></div>
+      <p className="hint">Aggiungi ciò che hai fatto fuori dall'app. I recuperi diventano non misurati.</p>
+      {added.map((e, i) => <p key={i} className="hint"><strong>{e.name}</strong>: {e.sets.length} × {e.sets[0].r ?? '–'}{e.sets[0].w != null ? ` a ${fmtKg(e.sets[0].w)} kg` : ''}</p>)}
+      <div className="form">
+        <label>Esercizio fatto<input id="el-name" value={x.name} placeholder="Es. Hack squat" onChange={(e) => setX({ ...x, name: e.target.value })} /></label>
+        <div className="edit-grid">
+          <label>Serie<input id="el-sets" inputMode="numeric" value={x.sets} onChange={(e) => setX({ ...x, sets: e.target.value })} /></label>
+          <label>Ripetizioni<input id="el-reps" inputMode="numeric" value={x.reps} onChange={(e) => setX({ ...x, reps: e.target.value })} /></label>
+          <label>Peso kg<input id="el-w" inputMode="decimal" value={x.w} onChange={(e) => setX({ ...x, w: e.target.value })} /></label>
+        </div>
+        <button className="btn btn-secondary btn-wide" onClick={addEx}>Aggiungi alla sessione</button>
+      </div>
+      {day?.core && (
+        <div className="form">
+          <label className="check-row"><input id="el-core" type="checkbox" checked={coreOn} onChange={(e) => setCoreOn(e.target.checked)} />Registra il circuito addominali</label>
+          {coreOn && (
+            <>
+              <label>Giri fatti<input id="el-rounds" inputMode="numeric" value={rounds} onChange={(e) => setRounds(e.target.value)} /></label>
+              {items.map((c, i) => (
+                <div className="core-edit-item" key={i}>
+                  <label>{c.name}<input id={`el-ct-${i}`} value={c.target} onChange={(e) => setItems(items.map((y, j) => (j === i ? { ...y, target: e.target.value } : y)))} /></label>
+                  <label>kg<input id={`el-cw-${i}`} inputMode="decimal" value={c.w} onChange={(e) => setItems(items.map((y, j) => (j === i ? { ...y, w: e.target.value } : y)))} /></label>
+                </div>
+              ))}
+            </>
+          )}
+        </div>
+      )}
+      <label>Durata totale, minuti<input id="el-dur" inputMode="numeric" value={dur} onChange={(e) => setDur(e.target.value)} /></label>
+      <div className="act-row"><button className="btn btn-primary" onClick={save}>Salva correzioni</button><button className="btn btn-secondary" onClick={() => setOpen(false)}>Annulla</button></div>
+    </section>
+  )
+}
+
 export function LogDetail({ id, nav }: { id: string; nav: Nav }) {
   const { state, dispatch } = useStore()
   const l = state.logs.find((x) => x.id === id)
@@ -88,6 +148,23 @@ export function LogDetail({ id, nav }: { id: string; nav: Nav }) {
           <span>{l.strava.avgHr ? `${Math.round(l.strava.avgHr)} bpm medi` : 'frequenza non disponibile'}{l.strava.maxHr ? `, massimo ${Math.round(l.strava.maxHr)}` : ''}{l.strava.calories ? `, ${Math.round(l.strava.calories)} kcal` : ''}</span>
         </div>
       )}
+      {l.watch && (l.watch.avgHr != null || l.watch.kcal != null) && (
+        <div className="card">
+          <div className="card-title"><strong>Dall'orologio</strong><span className="hint">abbinata per orario</span></div>
+          <div className="watch-stats">
+            <div><b>{l.watch.avgHr ?? '–'}</b><span className="hint">FC media</span></div>
+            <div><b>{l.watch.maxHr ?? '–'}</b><span className="hint">FC max</span></div>
+            <div><b>{l.watch.kcal ?? '–'}</b><span className="hint">kcal, stima</span></div>
+          </div>
+          <p className="hint">Le calorie dell'orologio per i pesi sono una stima: valgono come ordine di grandezza.</p>
+        </div>
+      )}
+      {l.core && l.core.length > 0 && (
+        <div className="card">
+          <div className="card-title"><strong>Circuito addominali</strong><span>{l.coreRounds ?? 0} giri</span></div>
+          <ul className="core-done">{l.core.map((c, i) => <li key={i}><span>{c.name}</span><strong>{c.target}{c.w != null ? `, ${fmtKg(c.w)} kg` : ''}</strong></li>)}</ul>
+        </div>
+      )}
       <ul className="list log-list">
         {l.entries.map((e) => {
           const prev = exerciseHistory(before, e.name).pop()
@@ -104,6 +181,7 @@ export function LogDetail({ id, nav }: { id: string; nav: Nav }) {
           )
         })}
       </ul>
+      <EditLog l={l} />
       <div className="actions"><ConfirmButton label="Elimina sessione" confirm="Tocca ancora per eliminare" onConfirm={() => { dispatch({ type: 'deleteLog', id: l.id }); nav.back() }} /></div>
     </div>
   )

@@ -6,7 +6,7 @@
    "subtitle": "Full Body x4 in multifrequenza",
    "period": "Novembre 2026",
    "status": "active",
-   "note": "Max 80 minuti. Focus spalle, gambe, polpacci. Settimana 4 di deload.",
+   "note": "Max 80 minuti. Focus spalle, gambe, polpacci. Cinque settimane di lavoro, poi settimana 6 di scarico.",
    "days": [
     {
      "id": "m7-g1",
@@ -94,6 +94,18 @@
        "isNew": false
       },
       {
+       "id": "m7-1-supine-press",
+       "name": "Supine press",
+       "sets": 3,
+       "reps": "8",
+       "weight": 50.0,
+       "weightNote": "50 kg (25 per lato)",
+       "rest": 90,
+       "technique": "Esecuzione molto lenta",
+       "group": null,
+       "isNew": true
+      },
+      {
        "id": "m7-1-calf-raise-in-piedi",
        "name": "Calf raise in piedi",
        "sets": 4,
@@ -168,8 +180,8 @@
        "name": "Leg press",
        "sets": 4,
        "reps": "10",
-       "weight": 215.0,
-       "weightNote": "215 kg",
+       "weight": 235.0,
+       "weightNote": "235 kg",
        "rest": 120,
        "technique": "Ultima serie rest-pause",
        "group": null,
@@ -180,8 +192,8 @@
        "name": "Rematore Pendlay",
        "sets": 3,
        "reps": "8",
-       "weight": 60.0,
-       "weightNote": "60 kg",
+       "weight": 62.5,
+       "weightNote": "62,5 kg",
        "rest": 120,
        "technique": "Bilanciere fermo a terra a ogni ripetizione",
        "group": null,
@@ -216,8 +228,8 @@
        "name": "Alzate frontali manubri",
        "sets": 3,
        "reps": "10",
-       "weight": 16.0,
-       "weightNote": "16 kg (come da log)",
+       "weight": 20.0,
+       "weightNote": "20 kg",
        "rest": 90,
        "technique": "Alternate o insieme, senza slancio",
        "group": "Superserie",
@@ -228,12 +240,24 @@
        "name": "Shoulder press",
        "sets": 3,
        "reps": "8",
-       "weight": 40.0,
-       "weightNote": "40 kg",
+       "weight": 42.5,
+       "weightNote": "42,5 kg",
        "rest": 90,
        "technique": "Discesa in 2 s, gomiti non bloccati in alto",
        "group": null,
        "isNew": false
+      },
+      {
+       "id": "m7-2-hack-squat",
+       "name": "Hack squat",
+       "sets": 3,
+       "reps": "12",
+       "weight": 85.0,
+       "weightNote": "85 kg",
+       "rest": 90,
+       "technique": "Controllo in discesa",
+       "group": null,
+       "isNew": true
       },
       {
        "id": "m7-2-curl-bilanciere-ai-cavi",
@@ -270,14 +294,15 @@
         "cue": "Mani verso i piedi, discesa controllata"
        },
        {
-        "name": "Russian twist con manubrio",
-        "target": "20 per lato",
-        "cue": "Piedi sollevati; manubrio leggero, da scegliere in S1"
+        "name": "Russian twist con kettlebell",
+        "target": "12 per lato",
+        "cue": "Piedi sollevati, busto stabile",
+        "w": null
        },
        {
-        "name": "Mountain climber",
-        "target": "30 secondi",
-        "cue": "Ritmo alto, bacino basso"
+        "name": "Plank laterale con torsione",
+        "target": "12 per lato",
+        "cue": "Bacino alto, rotazione lenta"
        },
        {
         "name": "Crunch con gambe a 90 gradi",
@@ -493,8 +518,8 @@
        "name": "Leg press",
        "sets": 4,
        "reps": "10",
-       "weight": 215.0,
-       "weightNote": "215 kg",
+       "weight": 235.0,
+       "weightNote": "235 kg",
        "rest": 120,
        "technique": "Fermo 1 s in basso",
        "group": null,
@@ -529,8 +554,8 @@
        "name": "Shoulder press",
        "sets": 3,
        "reps": "8",
-       "weight": 40.0,
-       "weightNote": "40 kg",
+       "weight": 42.5,
+       "weightNote": "42,5 kg",
        "rest": 90,
        "technique": "Ultima serie drop set",
        "group": null,

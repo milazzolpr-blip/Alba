@@ -1,5 +1,5 @@
 // Cache minima: l'app si apre anche senza rete in palestra.
-const CACHE = 'alba-v2'
+const CACHE = 'alba-v3'
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(['/']))); self.skipWaiting() })
 self.addEventListener('activate', (e) => e.waitUntil(self.clients.claim()))
 self.addEventListener('fetch', (e) => {

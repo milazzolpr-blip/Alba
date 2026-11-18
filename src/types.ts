@@ -12,7 +12,8 @@ export interface Exercise {
   startW?: number // carico indicato dal coach: vale finché non registri una sessione più recente
   startWAt?: string
 }
-export interface CoreCircuit { rounds: number; rest: number; items: { name: string; target: string; cue: string }[] }
+export interface CoreItem { name: string; target: string; cue: string; w?: number | null }
+export interface CoreCircuit { rounds: number; rest: number; items: CoreItem[] }
 export interface Day {
   id: string
   name: string
@@ -46,8 +47,10 @@ export interface SessionLog {
   approx?: boolean
   imported?: boolean
   coreRounds?: number
+  core?: { name: string; target: string; w: number | null }[]
   entries: { name: string; sets: LoggedSet[] }[]
   strava?: StravaData
+  watch?: WatchData // frequenza e calorie dell'orologio, abbinate per orario
 }
 export interface ActiveSet { w: number | null; r: number | null; done: boolean }
 export interface ActiveSession {
@@ -62,14 +65,19 @@ export interface ActiveSession {
   rest: { startedAt: number | null; accMs: number; plannedMs: number; label: string; buzzed: boolean } | null
   sets: Record<string, ActiveSet[]>
   coreRounds: number
+  extra?: Exercise[] // esercizi aggiunti durante la sessione
+  core?: CoreItem[] // valori del circuito di oggi, modificabili
 }
 export interface StravaAuth { accessToken: string; refreshToken: string; expiresAt: number; athlete: string }
 export interface Wellness { date: string; sleepMin: number | null; restHr: number | null; hrv: number | null; source: 'manual' | 'healthconnect' }
 export interface CheckIn { date: string; energy: number; mood: number; stress: number; nutrition: 'sotto' | 'piano' | 'sopra' | null; weight: number | null; note: string }
 export interface Tomorrow { forDate: string; answer: 'piano' | 'leggera' | 'diversa' | 'riposo'; legs: number; note: string; answeredAt: string }
 export interface Mesocycle { number: number; startDate: string; trainWeeks: number }
-export interface AppliedPatch { id: string; at: string; programId: string; dayId: string; dayName: string; note: string; before: Day; reverted?: boolean }
-export interface Settings { sleepTargetMin: number }
+export interface AppliedPatch { id: string; at: string; programId: string; dayId: string; dayName: string; note: string; before: Day; reverted?: boolean; consolidated?: boolean }
+export interface Settings { sleepTargetMin: number; stepGoal?: number }
+export interface Activity { date: string; steps: number | null; distanceM: number | null; activeKcal: number | null; totalKcal: number | null }
+export interface HcSession { id: string; start: string; end: string; type: number; title: string | null; avgHr: number | null; maxHr: number | null; kcal: number | null; distanceM: number | null }
+export interface WatchData { avgHr: number | null; maxHr: number | null; kcal: number | null }
 export interface AppState {
   programs: Program[]
   logs: SessionLog[]
@@ -81,7 +89,10 @@ export interface AppState {
   tomorrow: Tomorrow | null
   meso: Mesocycle
   patches: AppliedPatch[]
+  activity?: Activity[]
+  hcSessions?: HcSession[]
+  seedApplied?: string[] // esercizi del seed già consolidati nella tua scheda
   settings: Settings
   lastCopyAt: string | null
-  hcLast: { at: string; days: number; sleep: number; hr: number; hrv: number } | null
+  hcLast: { at: string; days: number; sleep: number; hr: number; hrv: number; steps?: number; sessions?: number; activity?: boolean } | null
 }

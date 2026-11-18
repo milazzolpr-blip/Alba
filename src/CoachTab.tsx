@@ -101,7 +101,7 @@ export function CoachTab({ nav }: { nav: Nav }) {
             <li key={p.id} className="card">
               <div className="card-title"><strong>{p.dayName}</strong><span>{new Date(p.at).toLocaleDateString('it-IT', { day: 'numeric', month: 'short' })}</span></div>
               <p className="hint">{p.note || 'Modifica applicata'}</p>
-              {p.reverted ? <span className="chip">Annullata</span> : applied(p.id) && <ConfirmButton className="btn btn-ghost" label="Annulla questa modifica" confirm="Tocca ancora per ripristinare l'originale" onConfirm={() => dispatch({ type: 'revertPatch', id: p.id })} />}
+              {p.reverted ? <span className="chip">Annullata</span> : p.consolidated ? <span className="chip chip-on">Nella scheda</span> : applied(p.id) && <ConfirmButton className="btn btn-ghost" label="Annulla questa modifica" confirm="Tocca ancora per ripristinare l'originale" onConfirm={() => dispatch({ type: 'revertPatch', id: p.id })} />}
             </li>))}</ul>
         </section>
       )}

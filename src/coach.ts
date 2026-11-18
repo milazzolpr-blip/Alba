@@ -1,6 +1,7 @@
 import type { AppState, Day, Exercise, LoggedSet, Program, SessionLog } from './types'
 import { readiness, fmtSleep, dayKey, addDays, mesoWeek } from './wellness'
 import { fmtKg, fmtInt, logVolume, uid } from './lib'
+import { isGym, sessionLabel } from './health'
 
 const it = (d: string | Date, o: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' }) => new Date(d).toLocaleDateString('it-IT', o)
 
@@ -13,12 +14,14 @@ function sessionText(l: SessionLog, s: AppState) {
     for (const x of e.sets) { const g = groups[groups.length - 1]; if (g && g.w === x.w) g.r.push(x.r ?? 0); else groups.push({ w: x.w, r: [x.r ?? 0] }) }
     lines.push(`- ${e.name}: ${groups.map((g) => `${g.w == null ? '–' : fmtKg(g.w) + ' kg'} × ${g.r.join(', ')}`).join(' | ')}`)
   }
-  if (l.coreRounds) lines.push(`- Circuito addominali: ${l.coreRounds} giri`)
+  if (l.coreRounds) lines.push(`- Circuito addominali: ${l.coreRounds} giri${l.core?.length ? ` (${l.core.map((c) => `${c.name} ${c.target}${c.w != null ? ` ${c.w} kg` : ''}`).join('; ')})` : ''}`)
   const t: string[] = []
   if (l.durationMs != null) t.push(`durata attiva ${Math.round(l.durationMs / 60000)} min`)
   if (l.pausedMs) t.push(`pause ${Math.round(l.pausedMs / 60000)} min`)
   if (l.restMs) t.push(`recuperi ${Math.round(l.restMs / 60000)} min`)
   t.push(`volume ${fmtInt(logVolume(l))} kg`)
+  if (l.watch?.avgHr) t.push(`FC media ${l.watch.avgHr} bpm${l.watch.maxHr ? `, max ${l.watch.maxHr}` : ''}`)
+  if (l.watch?.kcal) t.push(`${l.watch.kcal} kcal orologio (stima)`)
   if (l.strava?.avgHr) t.push(`FC media ${l.strava.avgHr} bpm`)
   if (l.strava?.calories) t.push(`${l.strava.calories} kcal orologio`)
   lines.push(t.join(', '))
@@ -26,7 +29,7 @@ function sessionText(l: SessionLog, s: AppState) {
 }
 
 export type Range = 'week' | 'today' | 'last'
-export const PATCH_HELP = `Se vuoi modificare la scheda, rispondimi con un blocco \`\`\`alba-patch con JSON: {"day":"nome giorno","note":"motivo","changes":[{"exercise":"nome","sets":3,"reps":"8","weight":65,"technique":"testo","rest":120}],"remove":["nome"],"core_rounds":3,"minutes":62}. Tutti i campi tranne day e changes sono facoltativi.`
+export const PATCH_HELP = `Se vuoi modificare la scheda, rispondimi con un blocco \`\`\`alba-patch con JSON: {"day":"nome giorno","note":"motivo","changes":[{"exercise":"nome","sets":3,"reps":"8","weight":65,"technique":"testo","rest":120}],"remove":["nome"],"core_rounds":3,"core":{"rounds":4,"rest":60,"items":[{"name":"V-up","target":"12 rip.","cue":""}]},"minutes":62}. Tutti i campi tranne day e changes sono facoltativi.`
 
 export function coachSummary(s: AppState, range: Range, now: Date = new Date()): string {
   const out: string[] = []
@@ -42,20 +45,29 @@ export function coachSummary(s: AppState, range: Range, now: Date = new Date()):
     if (!w.length) out.push('Nessun dato registrato.')
     for (const x of w) out.push(`${it(x.date, { weekday: 'short', day: 'numeric' })}: sonno ${fmtSleep(x.sleepMin)}, FC a riposo ${x.restHr ?? '–'} bpm, HRV ${x.hrv ?? '–'} ms`)
     if (r.level !== 'nodata') out.push(`Stato calcolato dall'app: ${r.title}${r.reasons.length ? ' (' + r.reasons.join('; ') + ')' : ''}`)
+    const act = (s.activity ?? []).filter((x) => x.date >= from).sort((a, b) => a.date.localeCompare(b.date))
+    const extra = (s.hcSessions ?? []).filter((x) => !isGym(x.type) && dayKey(new Date(x.start)) >= from)
+    if (act.length || extra.length) {
+      out.push('', 'ATTIVITÀ (Amazfit)')
+      for (const x of act) out.push(`${it(x.date, { weekday: 'short', day: 'numeric' })}: ${x.steps != null ? `${fmtInt(x.steps)} passi` : 'passi non disponibili'}${x.distanceM != null ? `, ${(x.distanceM / 1000).toFixed(1).replace('.', ',')} km` : ''}${x.activeKcal != null ? `, ${fmtInt(x.activeKcal)} kcal attive` : ''}${x.totalKcal != null ? `, ${fmtInt(x.totalKcal)} kcal totali` : ''}`)
+      if (extra.length) for (const x of extra) out.push(`- ${sessionLabel(x)}, ${it(x.start, { weekday: 'short', day: 'numeric' })}: ${Math.round((new Date(x.end).getTime() - new Date(x.start).getTime()) / 60000)} min${x.distanceM ? `, ${(x.distanceM / 1000).toFixed(1).replace('.', ',')} km` : ''}${x.avgHr ? `, FC media ${x.avgHr}${x.maxHr ? `, max ${x.maxHr}` : ''}` : ''}${x.kcal ? `, ${x.kcal} kcal` : ''}`)
+      else out.push('Altre attività: nessuna.')
+    }
     const c = s.checkins.filter((x) => x.date >= from).sort((a, b) => a.date.localeCompare(b.date))
     out.push('', 'CHECK-IN')
     if (!c.length) out.push('Nessun check-in.')
     for (const x of c) out.push(`${it(x.date, { weekday: 'short', day: 'numeric' })}: energia ${x.energy}/5, umore ${x.mood}/5, stress ${x.stress}/5${x.nutrition ? ', alimentazione ' + x.nutrition : ''}${x.weight ? ', peso ' + fmtKg(x.weight) + ' kg' : ''}${x.note ? '. Nota: ' + x.note : ''}`)
     if (s.tomorrow && s.tomorrow.forDate >= dayKey(now)) {
       const lab = { piano: 'sì, come da piano', leggera: 'sì, ma più leggera', diversa: 'sì, ma in un altro orario o più corta', riposo: 'no, riposo' }[s.tomorrow.answer]
-      out.push('', `DOMANI (${it(s.tomorrow.forDate, { weekday: 'long', day: 'numeric' })})`, `Mi alleno: ${lab}. Gambe ${s.tomorrow.legs}/5 di indolenzimento.${s.tomorrow.note ? ' ' + s.tomorrow.note : ''}`)
+      const isToday = s.tomorrow.forDate === dayKey(now)
+      out.push('', isToday ? `OGGI (${it(s.tomorrow.forDate, { weekday: 'long', day: 'numeric' })}, risposta data ieri sera)` : `DOMANI (${it(s.tomorrow.forDate, { weekday: 'long', day: 'numeric' })})`, `Mi alleno: ${lab}. Gambe ${s.tomorrow.legs}/5 di indolenzimento.${s.tomorrow.note ? ' ' + s.tomorrow.note : ''}`)
     }
   }
   const logs = range === 'last' ? s.logs.slice(-1) : range === 'today' ? s.logs.filter((l) => dayKey(new Date(l.startedAt)) === dayKey(now)) : s.logs.filter((l) => l.startedAt >= addDays(now, -7).toISOString())
   out.push('', range === 'last' ? 'ULTIMA SESSIONE' : 'SESSIONI')
   if (!logs.length) out.push('Nessuna sessione in questo periodo.')
   for (const l of logs) out.push(sessionText(l, s), '')
-  const mods = s.patches.filter((p) => !p.reverted && p.at >= addDays(now, -14).toISOString())
+  const mods = s.patches.filter((p) => !p.reverted && !p.consolidated && p.at >= addDays(now, -14).toISOString())
   if (mods.length) out.push('MODIFICHE DEL COACH ANCORA ATTIVE', ...mods.map((p) => `- ${p.dayName}: ${p.note}`), '')
   out.push('---', PATCH_HELP)
   return out.join('\n').replace(/\n{3,}/g, '\n\n')
@@ -69,7 +81,7 @@ export function nextMesoPrompt(s: AppState, now: Date = new Date()) {
 // ---------- Lettura della risposta del coach ----------
 export interface Change { exercise: string; sets?: number; reps?: string; weight?: number; technique?: string; rest?: number }
 export interface AddEx { name: string; sets: number; reps: string; weight?: number | null; rest?: number; technique?: string; after?: string }
-export interface Patch { day: string; note?: string; changes?: Change[]; add?: AddEx[]; remove?: string[]; core_rounds?: number; minutes?: number }
+export interface Patch { day: string; note?: string; changes?: Change[]; add?: AddEx[]; remove?: string[]; core_rounds?: number; core?: { rounds?: number; rest?: number; items?: { name: string; target: string; cue?: string }[] }; minutes?: number }
 export interface LogIn { day: string; startedAt: string; durationMin?: number | null; coreRounds?: number; entries: { name: string; sets: (number | null)[][] | LoggedSet[] }[] }
 export type Parsed = { kind: 'log'; log: LogIn; text: string } | { kind: 'patch'; patch: Patch; text: string } | { kind: 'program'; program: Program; text: string } | { kind: 'none'; text: string; error?: string }
 
@@ -152,6 +164,11 @@ export function applyPatch(day: Day, patch: Patch, nowIso: string): { day: Day; 
     next.exercises = next.exercises.filter((x) => x !== e)
   }
   if (patch.core_rounds != null && next.core) { rows.push({ name: 'Circuito addominali', before: `${next.core.rounds} giri`, after: `${patch.core_rounds} giri` }); next.core.rounds = patch.core_rounds }
+  if (patch.core) {
+    const c = next.core ?? { rounds: 4, rest: 60, items: [] }
+    rows.push({ name: 'Circuito addominali', before: next.core ? `${c.rounds} giri, ${c.items.length} esercizi` : 'non c\'era', after: `${patch.core.rounds ?? c.rounds} giri, ${(patch.core.items ?? c.items).length} esercizi` })
+    next.core = { rounds: patch.core.rounds ?? c.rounds, rest: patch.core.rest ?? c.rest, items: (patch.core.items ?? c.items).map((it) => ({ name: it.name, target: it.target, cue: it.cue ?? '' })) }
+  }
   if (patch.minutes != null) { rows.push({ name: 'Durata prevista', before: `${next.minutes ?? '–'} min`, after: `${patch.minutes} min` }); next.minutes = patch.minutes }
   return { day: next, preview: { day: next, rows, errors } }
 }
