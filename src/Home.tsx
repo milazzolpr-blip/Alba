@@ -2,7 +2,7 @@ import { useStore } from './store'
 import { Icon, Spark, Stat, useNow } from './ui'
 import { allExerciseNames, exerciseHistory, fmtClock, fmtDate, fmtInt, fmtKg, fmtMin, logSets, logVolume, mondayOf, nextUp, readyToProgress } from './lib'
 import type { Nav } from './App'
-import { isGym, isNative, sessionLabel } from './health'
+import { isGym, isNative, MIN_ACTIVITY_MIN, sessionLabel, sessionMin } from './health'
 import { dayKey, fmtSleep, levelColor, mesoWeek, readiness } from './wellness'
 
 const DAYS = ['L', 'M', 'M', 'G', 'V', 'S', 'D']
@@ -157,13 +157,13 @@ function ActivityBlock({ nav }: { nav: Nav }) {
   const acts = state.activity ?? []
   const today = acts.find((a) => a.date === dayKey())
   const since = Date.now() - 7 * 86400000
-  const others = (state.hcSessions ?? []).filter((x) => !isGym(x.type) && new Date(x.start).getTime() > since).slice(-4).reverse()
+  const others = (state.hcSessions ?? []).filter((x) => !isGym(x.type) && sessionMin(x) >= MIN_ACTIVITY_MIN && new Date(x.start).getTime() > since).slice(-4).reverse()
   const noData = isNative && state.hcLast && state.hcLast.activity === false
   if (!today && !others.length && !noData) return null
   if (!today && !others.length) return <button className="card card-tap coach-note" onClick={() => nav.tab('profile')}><strong className="brass">Passi e allenamenti non arrivano</strong><span>Zepp non li manda a Health Connect, oppure mancano i permessi. Tocca per controllare.</span></button>
   const pct = today?.steps != null ? Math.min(100, Math.round((today.steps / goal) * 100)) : 0
   const yday = new Date(Date.now() - 86400000).getTime()
-  const heavy = (state.hcSessions ?? []).some((x) => !isGym(x.type) && new Date(x.end).getTime() > yday - 86400000 && new Date(x.end).getTime() - new Date(x.start).getTime() >= 90 * 60000)
+  const heavy = (state.hcSessions ?? []).some((x) => !isGym(x.type) && new Date(x.end).getTime() > yday - 86400000 && sessionMin(x) >= 90)
   const fmt = (n: number | null) => (n == null ? '–' : fmtInt(n))
   return (
     <section className="card activity">

@@ -1,4 +1,5 @@
 export interface Exercise {
+  afterName?: string // posizione scelta quando l'esercizio è stato aggiunto: dopo questo esercizio
   id: string
   name: string
   sets: number
@@ -94,5 +95,5 @@ export interface AppState {
   seedApplied?: string[] // esercizi del seed già consolidati nella tua scheda
   settings: Settings
   lastCopyAt: string | null
-  hcLast: { at: string; days: number; sleep: number; hr: number; hrv: number; steps?: number; sessions?: number; activity?: boolean } | null
+  hcLast: { at: string; days: number; sleep: number; hr: number; hrv: number; steps?: number; sessions?: number; activity?: boolean; ms?: number; full?: boolean } | null
 }

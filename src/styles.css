@@ -349,3 +349,7 @@ textarea { resize: vertical; font-size: 14px; }
 .act-line span { color: var(--muted); text-align: right; }
 .watch-stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
 .watch-stats b { display: block; font: 800 22px var(--display); color: var(--brass); }
+
+/* Pannello in alto per aggiungere un esercizio: resta visibile con la tastiera aperta */
+.sheet-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, .6); }
+.sheet { position: absolute; top: 0; left: 0; right: 0; max-width: 520px; margin: 0 auto; max-height: 75dvh; overflow-y: auto; background: var(--panel); border-radius: 0 0 22px 22px; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 16px; display: flex; flex-direction: column; gap: 10px; }

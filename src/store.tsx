@@ -16,6 +16,7 @@ const initial = (): AppState => ({
 
 /** Le schede salvate sul telefono non si aggiornano da sole: se il seed ha il circuito addominali e la tua copia no, lo aggiunge. */
 const CONSOLIDATED = ['m7-1-supine-press', 'm7-2-hack-squat']
+const sp3 = (seeds: Program[]) => seeds.find((p) => p.id === 'm7')?.days.find((d) => d.id === 'm7-g3')?.exercises.find((e) => /push.?down/i.test(e.name)) as Exercise
 function backfill(s: AppState): AppState {
   const seeds = (seed as unknown as { programs: Program[] }).programs
   const programs = s.programs.map((p) => {
@@ -49,14 +50,26 @@ function backfill(s: AppState): AppState {
   const ALIGN = 'align-m7-g4-loads'
   const aligned = applied.has(ALIGN) ? merged : merged.map((p) => (p.id !== 'm7' ? p : { ...p, days: p.days.map((d) => (d.id !== 'm7-g4' ? d : { ...d, exercises: d.exercises.map((e) => (e.name === 'Leg press' && (e.weight ?? 0) < 235 ? { ...e, weight: 235, weightNote: '235 kg' } : e.name === 'Shoulder press' && (e.weight ?? 0) < 42.5 ? { ...e, weight: 42.5, weightNote: '42,5 kg' } : e)) })) }))
   applied.add(ALIGN)
+  const PD = 'm7-push-down-before-superset'
+  const withPd = applied.has(PD) ? aligned : aligned.map((p) => (p.id !== 'm7' ? p : { ...p, days: p.days.map((d) => {
+    if (d.id !== 'm7-g3') return d
+    const ex = [...d.exercises]
+    const from = ex.findIndex((e) => /push.?down/i.test(e.name))
+    const moved = from >= 0 ? ex.splice(from, 1)[0] : structuredClone(sp3(seeds))
+    if (!moved) return d
+    const to = ex.findIndex((e) => /overhead tricipiti/i.test(e.name))
+    ex.splice(to >= 0 ? to : ex.length, 0, { ...moved, sets: 4, reps: moved.reps || '10', rest: 90, group: null })
+    return { ...d, exercises: ex }
+  }) }))
+  applied.add(PD)
   // Le modifiche del coach che hanno aggiunto esercizi ora presenti nella scheda sono consolidate: non si annullano più.
   const patches = s.patches.map((pt) => {
     if (pt.reverted || pt.consolidated) return pt
-    const day = aligned.find((p) => p.id === pt.programId)?.days.find((x) => x.id === pt.dayId)
+    const day = withPd.find((p) => p.id === pt.programId)?.days.find((x) => x.id === pt.dayId)
     const added = day ? day.exercises.filter((e) => !pt.before.exercises.some((b) => b.name === e.name)) : []
     return added.length && added.every((e) => day!.exercises.some((x) => x.name === e.name)) ? { ...pt, consolidated: true } : pt
   })
-  return { ...s, programs: aligned, patches, seedApplied: [...applied] }
+  return { ...s, programs: withPd, patches, seedApplied: [...applied] }
 }
 
 function load(): AppState {
@@ -76,7 +89,7 @@ export type Action =
   | { type: 'setMeso'; startDate?: string; number?: number; trainWeeks?: number }
   | { type: 'setSleepTarget'; min: number }
   | { type: 'copied' }
-  | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number; activity?: Activity[]; sessions?: HcSession[] }
+  | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number; activity?: Activity[]; sessions?: HcSession[]; ms?: number; full?: boolean }
   | { type: 'setStepGoal'; steps: number }
   | { type: 'applyPatch'; programId: string; day: Day; note: string }
   | { type: 'revertPatch'; id: string }
@@ -177,7 +190,7 @@ function reduce(s: AppState, act: Action): AppState {
     }
     case 'addExtra': {
       if (!a) return s
-      return { ...s, active: { ...a, extra: [...(a.extra ?? []), act.exercise], sets: { ...a.sets, [act.exercise.id]: act.sets } }, ...(act.keep ? { programs: s.programs.map((p) => (p.id === a.programId ? { ...p, days: p.days.map((d) => (d.id === a.dayId ? { ...d, exercises: [...d.exercises, act.exercise] } : d)) } : p)) } : {}) }
+      return { ...s, active: { ...a, extra: [...(a.extra ?? []), act.exercise], sets: { ...a.sets, [act.exercise.id]: act.sets } }, ...(act.keep ? { programs: s.programs.map((p) => (p.id === a.programId ? { ...p, days: p.days.map((d) => { if (d.id !== a.dayId) return d; const at = act.exercise.afterName ? d.exercises.findIndex((e) => e.name === act.exercise.afterName) : -1; const ex = [...d.exercises]; ex.splice(at >= 0 ? at + 1 : ex.length, 0, act.exercise); return { ...d, exercises: ex } }) } : p)) } : {}) }
     }
     case 'editLog': {
       return { ...s, logs: s.logs.map((l) => {
@@ -225,8 +238,10 @@ function reduce(s: AppState, act: Action): AppState {
       }
       const ab = new Map((s.activity ?? []).map((a) => [a.date, a]))
       for (const a of act.activity ?? []) ab.set(a.date, a)
-      const sb = new Map((s.hcSessions ?? []).map((x) => [x.id, x]))
-      for (const x of act.sessions ?? []) sb.set(x.id, x)
+      // Zepp può scrivere due volte lo stesso allenamento: si tiene una sola copia per inizio, fine e tipo.
+      const sKey = (x: HcSession) => `${x.start}|${x.end}|${x.type}`
+      const sb = new Map((s.hcSessions ?? []).map((x) => [sKey(x), x]))
+      for (const x of act.sessions ?? []) sb.set(sKey(x), x)
       const hcSessions = [...sb.values()].sort((a, b) => a.start.localeCompare(b.start)).slice(-120)
       // Abbina a ogni sessione dell'app l'allenamento dell'orologio con più sovrapposizione di orario.
       const logs = s.logs.map((l) => {
@@ -241,7 +256,10 @@ function reduce(s: AppState, act: Action): AppState {
         return best && (best.avgHr != null || best.kcal != null) ? { ...l, watch: { avgHr: best.avgHr, maxHr: best.maxHr, kcal: best.kcal } } : l
       })
       return { ...s, logs, wellness: [...by.values()].sort((a, b) => a.date.localeCompare(b.date)), activity: [...ab.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-60), hcSessions,
-        hcLast: { at: new Date().toISOString(), days: act.entries.length, sleep: act.sleep, hr: act.hr, hrv: act.hrv, steps: (act.activity ?? []).filter((a) => a.steps != null).length, sessions: (act.sessions ?? []).length, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0) } }
+        hcLast: act.full === false && s.hcLast
+          // Lettura veloce: i conteggi restano quelli dell'ultima lettura completa.
+          ? { ...s.hcLast, at: new Date().toISOString(), ms: act.ms, full: false, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0) ? true : s.hcLast.activity }
+          : { at: new Date().toISOString(), days: act.entries.length, sleep: act.sleep, hr: act.hr, hrv: act.hrv, steps: (act.activity ?? []).filter((a) => a.steps != null).length, sessions: (act.sessions ?? []).length, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0), ms: act.ms, full: true } }
     }
     case 'copied': return { ...s, lastCopyAt: new Date().toISOString() }
     case 'applyPatch': {

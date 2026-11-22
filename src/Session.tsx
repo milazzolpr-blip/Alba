@@ -61,33 +61,38 @@ function ExerciseCard({ ex, sets, nextLabel }: { ex: Exercise; sets: ActiveSet[]
   )
 }
 
-function AddExtra() {
+function AddExtra({ names }: { names: string[] }) {
   const { dispatch } = useStore()
   const [open, setOpen] = useState(false)
-  const [f, setF] = useState({ name: '', sets: '3', reps: '10', w: '', rest: '90', keep: true })
+  const [f, setF] = useState({ name: '', sets: '3', reps: '10', w: '', rest: '90', keep: true, after: '' })
   const num = (v: string) => (v === '' || isNaN(Number(v.replace(',', '.'))) ? null : Number(v.replace(',', '.')))
   if (!open) return <button className="ghost-add" onClick={() => setOpen(true)}><Icon name="plus" size={16} />Aggiungi esercizio a questa sessione</button>
   const add = () => {
     if (!f.name.trim()) return
     const w = num(f.w), n = Math.max(1, Number(f.sets) || 1)
-    const ex: Exercise = { id: `x-${uid()}`, name: f.name.trim(), sets: n, reps: f.reps || '10', weight: w, weightNote: w != null ? `${w.toLocaleString('it-IT')} kg` : '', rest: Math.max(0, Number(f.rest) || 0), technique: '', group: null, isNew: true }
+    const ex: Exercise = { id: `x-${uid()}`, name: f.name.trim(), sets: n, reps: f.reps || '10', weight: w, weightNote: w != null ? `${w.toLocaleString('it-IT')} kg` : '', rest: Math.max(0, Number(f.rest) || 0), technique: '', group: null, isNew: true, afterName: f.after || undefined }
     dispatch({ type: 'addExtra', exercise: ex, sets: Array.from({ length: n }, () => ({ w, r: Number(f.reps) || null, done: false })), keep: f.keep })
-    setOpen(false); setF({ name: '', sets: '3', reps: '10', w: '', rest: '90', keep: true })
+    setOpen(false); setF({ name: '', sets: '3', reps: '10', w: '', rest: '90', keep: true, after: '' })
   }
+  // Pannello ancorato in alto: la tastiera occupa la parte bassa dello schermo e non copre più i campi.
   return (
-    <article className="ex add-extra">
+    <div className="sheet-backdrop" onClick={() => setOpen(false)}>
+    <article className="sheet" role="dialog" aria-label="Aggiungi esercizio" onClick={(e) => e.stopPropagation()}>
+      <div className="card-title"><strong>Aggiungi esercizio</strong></div>
       <div className="form">
-        <label>Esercizio<input id="x-name" value={f.name} placeholder="Es. Hack squat" onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
+        <label>Esercizio<input id="x-name" autoFocus enterKeyHint="next" value={f.name} placeholder="Es. Hack squat" onChange={(e) => setF({ ...f, name: e.target.value })} /></label>
         <div className="edit-grid">
           <label>Serie<input id="x-sets" inputMode="numeric" value={f.sets} onChange={(e) => setF({ ...f, sets: e.target.value })} /></label>
           <label>Ripetizioni<input id="x-reps" value={f.reps} onChange={(e) => setF({ ...f, reps: e.target.value })} /></label>
           <label>Peso kg<input id="x-w" inputMode="decimal" value={f.w} onChange={(e) => setF({ ...f, w: e.target.value })} /></label>
           <label>Recupero s<input id="x-rest" inputMode="numeric" value={f.rest} onChange={(e) => setF({ ...f, rest: e.target.value })} /></label>
         </div>
+        <label>Dopo quale esercizio<select id="x-after" value={f.after} onChange={(e) => setF({ ...f, after: e.target.value })}><option value="">In fondo</option>{names.map((n) => <option key={n} value={n}>{n}</option>)}</select></label>
         <label className="check-row"><input id="x-keep" type="checkbox" checked={f.keep} onChange={(e) => setF({ ...f, keep: e.target.checked })} />Tienilo anche nella scheda</label>
         <div className="act-row"><button className="btn btn-primary" onClick={add}>Aggiungi</button><button className="btn btn-secondary" onClick={() => setOpen(false)}>Annulla</button></div>
       </div>
     </article>
+    </div>
   )
 }
 
@@ -120,7 +125,14 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
   if (!a || !day) return null
   const paused = !a.resumedAt
   const elapsed = a.activeMs + (a.resumedAt ? now - a.resumedAt : 0)
-  const exList = [...day.exercises, ...(a.extra ?? []).filter((x) => !day.exercises.some((y) => y.id === x.id))]
+  const exList = (() => {
+    const list = [...day.exercises]
+    for (const x of (a.extra ?? []).filter((y) => !day.exercises.some((z) => z.id === y.id))) {
+      const at = x.afterName ? list.findIndex((e) => e.name === x.afterName) : -1
+      list.splice(at >= 0 ? at + 1 : list.length, 0, x)
+    }
+    return list
+  })()
   const all = exList.flatMap((e) => a.sets[e.id] ?? [])
   const doneSets = all.filter((s) => s.done).length
   const budget = (day.minutes ?? 0) * 60000
@@ -167,7 +179,7 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
           )
         })}
 
-        <AddExtra />
+        <AddExtra names={exList.map((e) => e.name)} />
 
         {day.core && (
           <article className="ex core">

@@ -39,7 +39,12 @@ function Shell() {
   // App Android: a ogni apertura legge da Health Connect, se i permessi sono già dati.
   useEffect(() => {
     if (!isNative) return
-    hcCheck().then((c) => (c.granted ? hcRead(35) : null)).then((r) => { if (r) dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions }) }).catch(() => {})
+    // Dopo la prima lettura completa bastano gli ultimi giorni; se l'ultima lettura ha meno di 5 minuti non si rilegge.
+    const last = state.hcLast
+    const quick = !!last && state.wellness.length >= 20
+    if (quick && Date.now() - new Date(last.at).getTime() < 5 * 60 * 1000) return
+    hcCheck().then((c) => (c.granted ? hcRead(quick ? 'quick' : 'full') : null)).then((r) => { if (r) dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions, ms: r.ms, full: r.full }) }).catch(() => {})
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
   useEffect(() => { window.scrollTo(0, 0) }, [tab, stack.length])
 

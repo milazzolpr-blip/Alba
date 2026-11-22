@@ -439,6 +439,18 @@
        "isNew": false
       },
       {
+       "id": "m7-3-push-down-tricipiti",
+       "name": "Push down tricipiti con triangolo",
+       "sets": 4,
+       "reps": "10",
+       "weight": null,
+       "weightNote": "peso da definire",
+       "rest": 90,
+       "technique": "Gomiti fermi, estensione completa",
+       "group": null,
+       "isNew": true
+      },
+      {
        "id": "m7-3-overhead-tricipiti-cavo",
        "name": "Overhead tricipiti cavo",
        "sets": 3,

@@ -1,7 +1,7 @@
 import type { AppState, Day, Exercise, LoggedSet, Program, SessionLog } from './types'
 import { readiness, fmtSleep, dayKey, addDays, mesoWeek } from './wellness'
 import { fmtKg, fmtInt, logVolume, uid } from './lib'
-import { isGym, sessionLabel } from './health'
+import { isGym, MIN_ACTIVITY_MIN, sessionLabel, sessionMin } from './health'
 
 const it = (d: string | Date, o: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' }) => new Date(d).toLocaleDateString('it-IT', o)
 
@@ -46,12 +46,17 @@ export function coachSummary(s: AppState, range: Range, now: Date = new Date()):
     for (const x of w) out.push(`${it(x.date, { weekday: 'short', day: 'numeric' })}: sonno ${fmtSleep(x.sleepMin)}, FC a riposo ${x.restHr ?? '–'} bpm, HRV ${x.hrv ?? '–'} ms`)
     if (r.level !== 'nodata') out.push(`Stato calcolato dall'app: ${r.title}${r.reasons.length ? ' (' + r.reasons.join('; ') + ')' : ''}`)
     const act = (s.activity ?? []).filter((x) => x.date >= from).sort((a, b) => a.date.localeCompare(b.date))
-    const extra = (s.hcSessions ?? []).filter((x) => !isGym(x.type) && dayKey(new Date(x.start)) >= from)
+    const seen = new Set<string>()
+    const extra = (s.hcSessions ?? []).filter((x) => !isGym(x.type) && dayKey(new Date(x.start)) >= from).filter((x) => { const k = `${x.start}|${x.end}|${x.type}`; if (seen.has(k)) return false; seen.add(k); return true })
     if (act.length || extra.length) {
       out.push('', 'ATTIVITÀ (Amazfit)')
       for (const x of act) out.push(`${it(x.date, { weekday: 'short', day: 'numeric' })}: ${x.steps != null ? `${fmtInt(x.steps)} passi` : 'passi non disponibili'}${x.distanceM != null ? `, ${(x.distanceM / 1000).toFixed(1).replace('.', ',')} km` : ''}${x.activeKcal != null ? `, ${fmtInt(x.activeKcal)} kcal attive` : ''}${x.totalKcal != null ? `, ${fmtInt(x.totalKcal)} kcal totali` : ''}`)
-      if (extra.length) for (const x of extra) out.push(`- ${sessionLabel(x)}, ${it(x.start, { weekday: 'short', day: 'numeric' })}: ${Math.round((new Date(x.end).getTime() - new Date(x.start).getTime()) / 60000)} min${x.distanceM ? `, ${(x.distanceM / 1000).toFixed(1).replace('.', ',')} km` : ''}${x.avgHr ? `, FC media ${x.avgHr}${x.maxHr ? `, max ${x.maxHr}` : ''}` : ''}${x.kcal ? `, ${x.kcal} kcal` : ''}`)
-      else out.push('Altre attività: nessuna.')
+      const long = extra.filter((x) => sessionMin(x) >= MIN_ACTIVITY_MIN)
+      for (const x of long) out.push(`- ${sessionLabel(x)}, ${it(x.start, { weekday: 'short', day: 'numeric' })}: ${sessionMin(x)} min${x.distanceM ? `, ${(x.distanceM / 1000).toFixed(1).replace('.', ',')} km` : ''}${x.avgHr ? `, FC media ${x.avgHr}${x.maxHr ? `, max ${x.maxHr}` : ''}` : ''}${x.kcal ? `, ${x.kcal} kcal` : ''}`)
+      const shortDays = new Map<string, { n: number; min: number }>()
+      for (const x of extra.filter((y) => sessionMin(y) < MIN_ACTIVITY_MIN)) { const k = dayKey(new Date(x.start)); const g = shortDays.get(k) ?? { n: 0, min: 0 }; shortDays.set(k, { n: g.n + 1, min: g.min + sessionMin(x) }) }
+      if (shortDays.size) out.push(`Brevi camminate (sotto ${MIN_ACTIVITY_MIN} min): ${[...shortDays].map(([k, g]) => `${it(k, { weekday: 'short', day: 'numeric' })} ${g.n} per ${g.min} min`).join('; ')}`)
+      if (!extra.length) out.push('Altre attività: nessuna.')
     }
     const c = s.checkins.filter((x) => x.date >= from).sort((a, b) => a.date.localeCompare(b.date))
     out.push('', 'CHECK-IN')
