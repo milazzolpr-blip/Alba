@@ -74,6 +74,7 @@ function EditLog({ l }: { l: SessionLog }) {
   const [rounds, setRounds] = useState(String(l.coreRounds ?? day?.core?.rounds ?? 4))
   const [coreOn, setCoreOn] = useState(!l.core && !!day?.core)
   const [items, setItems] = useState(() => (day?.core?.items ?? []).map((c) => ({ name: c.name, target: c.target, w: c.w != null ? String(c.w) : '' })))
+  const [ents, setEnts] = useState(() => structuredClone(l.entries))
   const [dur, setDur] = useState(l.durationMs != null ? String(Math.round(l.durationMs / 60000)) : '')
   const num = (v: string) => (v === '' || isNaN(Number(v.replace(',', '.'))) ? null : Number(v.replace(',', '.')))
   if (!open) return <button className="btn btn-secondary btn-wide" onClick={() => setOpen(true)}>Correggi sessione</button>
@@ -84,14 +85,28 @@ function EditLog({ l }: { l: SessionLog }) {
     setX({ name: '', sets: '3', reps: '12', w: '' })
   }
   const save = () => {
-    dispatch({ type: 'editLog', id: l.id, add: added, durationMin: num(dur),
+    dispatch({ type: 'editLog', id: l.id, add: added, entries: ents, durationMin: num(dur),
       ...(coreOn && items.length ? { coreRounds: Number(rounds) || 0, core: items.map((c) => ({ name: c.name, target: c.target, w: num(c.w) })) } : {}) })
     setOpen(false); setAdded([])
   }
   return (
     <section className="card edit-log">
       <div className="card-title"><strong>Correggi sessione</strong></div>
-      <p className="hint">Aggiungi ciò che hai fatto fuori dall'app. I recuperi diventano non misurati.</p>
+      <p className="hint">Correggi ripetizioni e carichi di ogni serie, togli o aggiungi una serie, aggiungi ciò che hai fatto fuori dall'app. I recuperi diventano non misurati.</p>
+      {ents.map((e, ei) => (
+        <div className="edit-entry" key={`${e.name}-${ei}`}>
+          <strong>{e.name}{e.circuit ? ' (circuito)' : ''}</strong>
+          {e.sets.map((s, si) => (
+            <div className="edit-set" key={si}>
+              <span className="hint">{si + 1}</span>
+              <input aria-label={`${e.name}, serie ${si + 1}, ${e.unit === 's' ? 'secondi' : 'ripetizioni'}`} inputMode="numeric" value={s.r ?? ''} onChange={(ev) => setEnts(ents.map((x, i) => (i === ei ? { ...x, sets: x.sets.map((y, j) => (j === si ? { ...y, r: num(ev.target.value) } : y)) } : x)))} />
+              <input aria-label={`${e.name}, serie ${si + 1}, kg`} inputMode="decimal" placeholder="kg" value={s.w ?? ''} onChange={(ev) => setEnts(ents.map((x, i) => (i === ei ? { ...x, sets: x.sets.map((y, j) => (j === si ? { ...y, w: num(ev.target.value) } : y)) } : x)))} />
+              <button className="link" aria-label="Togli serie" onClick={() => setEnts(ents.map((x, i) => (i === ei ? { ...x, sets: x.sets.filter((_, j) => j !== si) } : x)))}>Togli</button>
+            </div>
+          ))}
+          <button className="link" onClick={() => setEnts(ents.map((x, i) => (i === ei ? { ...x, sets: [...x.sets, { ...(x.sets[x.sets.length - 1] ?? { w: null, r: null }) }] } : x)))}>Aggiungi serie</button>
+        </div>
+      ))}
       {added.map((e, i) => <p key={i} className="hint"><strong>{e.name}</strong>: {e.sets.length} × {e.sets[0].r ?? '–'}{e.sets[0].w != null ? ` a ${fmtKg(e.sets[0].w)} kg` : ''}</p>)}
       <div className="form">
         <label>Esercizio fatto<input id="el-name" value={x.name} placeholder="Es. Hack squat" onChange={(e) => setX({ ...x, name: e.target.value })} /></label>
@@ -102,7 +117,7 @@ function EditLog({ l }: { l: SessionLog }) {
         </div>
         <button className="btn btn-secondary btn-wide" onClick={addEx}>Aggiungi alla sessione</button>
       </div>
-      {day?.core && (
+      {day?.core && !l.entries.some((e) => e.circuit) && (
         <div className="form">
           <label className="check-row"><input id="el-core" type="checkbox" checked={coreOn} onChange={(e) => setCoreOn(e.target.checked)} />Registra il circuito addominali</label>
           {coreOn && (
@@ -165,8 +180,17 @@ export function LogDetail({ id, nav }: { id: string; nav: Nav }) {
           <ul className="core-done">{l.core.map((c, i) => <li key={i}><span>{c.name}</span><strong>{c.target}{c.w != null ? `, ${fmtKg(c.w)} kg` : ''}</strong></li>)}</ul>
         </div>
       )}
+      {l.entries.some((e) => e.circuit) && (
+        <div className="card">
+          <div className="card-title"><strong>Circuito addominali</strong><span>{l.coreRounds ?? 0} giri</span></div>
+          <ul className="core-done">{l.entries.filter((e) => e.circuit).map((e) => (
+            <li key={e.name}><span>{e.name}</span><strong>{e.sets.map((s) => `${s.r ?? '–'}${e.unit === 's' ? ' s' : ''}${s.w != null ? ` · ${fmtKg(s.w)} kg` : ''}`).join(', ')}</strong></li>
+          ))}</ul>
+          {!!l.coreRestS?.length && <p className="hint">Pause tra i giri: {l.coreRestS.join(', ')} s</p>}
+        </div>
+      )}
       <ul className="list log-list">
-        {l.entries.map((e) => {
+        {l.entries.filter((e) => !e.circuit).map((e) => {
           const prev = exerciseHistory(before, e.name).pop()
           const top = Math.max(0, ...e.sets.map((s) => s.w ?? 0))
           const d = prev && top ? top - prev.top : null

@@ -188,17 +188,30 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
               <span className="ex-title"><strong>Circuito addominali</strong><span>{day.core.rounds} giri, nessuna pausa tra gli esercizi, {day.core.rest} s a fine giro</span></span>
             </div>
             <ol className="core-list">
-              {(a.core ?? day.core.items).map((it, i) => (
-                <li key={`${it.name}-${i}`}>
-                  <strong>{it.name}</strong>
-                  <span className="core-vals">
-                    <input id={`core-t-${i}`} className="core-in" aria-label={`Quantità ${it.name}`} value={it.target} onChange={(e) => dispatch({ type: 'setCoreItem', idx: i, patch: { target: e.target.value } })} />
-                    <input id={`core-w-${i}`} className="core-in core-kg" inputMode="decimal" aria-label={`Peso ${it.name}, kg`} placeholder="kg" value={it.w ?? ''} onChange={(e) => { const v = e.target.value.replace(',', '.'); dispatch({ type: 'setCoreItem', idx: i, patch: { w: v === '' || isNaN(Number(v)) ? null : Number(v) } }) }} />
-                  </span>
-                  {it.cue && <span className="core-cue">{it.cue}</span>}
-                </li>
-              ))}
+              {(a.core ?? day.core.items).map((it, i) => {
+                const row = a.coreSets?.[`core-${i}`]
+                const unit = a.coreUnits?.[i] ?? 'r'
+                const num = (v: string) => { const t = v.replace(',', '.'); return t === '' || isNaN(Number(t)) ? null : Number(t) }
+                return (
+                  <li key={`${it.name}-${i}`}>
+                    <div className="core-name"><strong>{it.name}</strong><span className="hint">{it.target}{it.w != null ? `, ${it.w} kg` : ''}</span></div>
+                    {row && (
+                      <div className="core-cells">
+                        {row.map((c, j) => (
+                          <div key={j} className={`core-cell${c.done ? ' done' : ''}${j === a.coreRounds ? ' cur' : ''}`}>
+                            <input id={`core-r-${i}-${j}`} className="core-in" inputMode="numeric" aria-label={`${it.name}, giro ${j + 1}, ${unit === 's' ? 'secondi' : 'ripetizioni'}`} value={c.r ?? ''} onChange={(e) => dispatch({ type: 'setCoreCell', item: i, idx: j, field: 'r', value: num(e.target.value) })} />
+                            <input id={`core-w-${i}-${j}`} className="core-in core-kg" inputMode="decimal" aria-label={`${it.name}, giro ${j + 1}, kg`} placeholder="kg" value={c.w ?? ''} onChange={(e) => dispatch({ type: 'setCoreCell', item: i, idx: j, field: 'w', value: num(e.target.value) })} />
+                            <span className="core-giro">{unit === 's' ? 's · ' : ''}giro {j + 1}</span>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {it.cue && <span className="core-cue">{it.cue}</span>}
+                  </li>
+                )
+              })}
             </ol>
+            {!!a.coreRestS?.length && <p className="hint">Pause tra i giri: {a.coreRestS.join(', ')} s</p>}
             {a.coreRounds === 0 && <button className="link core-start" onClick={() => dispatch({ type: 'startCore' })}>Inizia il circuito: chiudi il recupero</button>}
             <button className="btn btn-secondary btn-wide" disabled={a.coreRounds >= day.core.rounds} onClick={() => dispatch({ type: 'coreRound', restS: a.coreRounds + 1 < day.core!.rounds ? day.core!.rest : 0 })}>
               {a.coreRounds >= day.core.rounds ? 'Circuito completato' : `Giro ${a.coreRounds + 1} completato`}

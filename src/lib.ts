@@ -16,7 +16,23 @@ export const fmtDate = (iso: string, opts: Intl.DateTimeFormatOptions = { weekda
 export const uid = () => Math.random().toString(36).slice(2, 10)
 
 export const logVolume = (l: SessionLog) =>
-  l.entries.reduce((t, e) => t + e.sets.reduce((a, s) => a + (s.w ?? 0) * (s.r ?? 0), 0), 0)
+  l.entries.reduce((t, e) => (e.unit === 's' ? t : t + e.sets.reduce((a, s) => a + (s.w ?? 0) * (s.r ?? 0), 0)), 0)
+
+/** "12 rip." → 12 ripetizioni; "30 s" o "1 min" → secondi. Vale la prima quantità del testo. */
+export function parseTarget(t: string): { r: number | null; unit: 's' | 'r' } {
+  const m = t.toLowerCase().match(/(\d+(?:[.,]\d+)?)\s*(min|secondi|sec|s\b|')?/)
+  if (!m) return { r: null, unit: 'r' }
+  const n = Number(m[1].replace(',', '.'))
+  if (m[2] === 'min' || m[2] === "'") return { r: Math.round(n * 60), unit: 's' }
+  if (m[2]) return { r: n, unit: 's' }
+  return { r: n, unit: 'r' }
+}
+/** Riscrive la quantità del testo con il valore di oggi, tenendo il resto ("12 rip. per lato"). */
+export function fmtTarget(orig: string, r: number | null, unit: 's' | 'r'): string {
+  if (r == null) return orig
+  if (unit === 's') return r >= 60 && r % 60 === 0 ? `${r / 60} min` : `${r} s`
+  return /\d/.test(orig) ? orig.replace(/\d+(?:[.,]\d+)?/, String(r)) : `${r} rip.`
+}
 export const logSets = (l: SessionLog) => l.entries.reduce((t, e) => t + e.sets.length, 0)
 
 export function mondayOf(d: Date) {

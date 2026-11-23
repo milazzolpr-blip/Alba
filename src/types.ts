@@ -49,7 +49,8 @@ export interface SessionLog {
   imported?: boolean
   coreRounds?: number
   core?: { name: string; target: string; w: number | null }[]
-  entries: { name: string; sets: LoggedSet[] }[]
+  entries: { name: string; sets: LoggedSet[]; unit?: 's'; circuit?: boolean }[] // circuit: esercizio del circuito addominali; unit 's': secondi invece di ripetizioni
+  coreRestS?: number[] // recupero realmente preso dopo ogni giro del circuito, in secondi
   strava?: StravaData
   watch?: WatchData // frequenza e calorie dell'orologio, abbinate per orario
 }
@@ -67,7 +68,10 @@ export interface ActiveSession {
   sets: Record<string, ActiveSet[]>
   coreRounds: number
   extra?: Exercise[] // esercizi aggiunti durante la sessione
-  core?: CoreItem[] // valori del circuito di oggi, modificabili
+  core?: CoreItem[] // nomi e quantità del circuito di oggi
+  coreSets?: Record<string, ActiveSet[]> // un valore per esercizio e per giro: core-0, core-1…
+  coreUnits?: ('s' | 'r')[] // secondi o ripetizioni, per esercizio del circuito
+  coreRestS?: number[]
 }
 export interface StravaAuth { accessToken: string; refreshToken: string; expiresAt: number; athlete: string }
 export interface Wellness { date: string; sleepMin: number | null; restHr: number | null; hrv: number | null; source: 'manual' | 'healthconnect' }

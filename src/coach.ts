@@ -1,6 +1,6 @@
 import type { AppState, Day, Exercise, LoggedSet, Program, SessionLog } from './types'
 import { readiness, fmtSleep, dayKey, addDays, mesoWeek } from './wellness'
-import { fmtKg, fmtInt, logVolume, uid } from './lib'
+import { fmtKg, fmtInt, fmtTarget, logVolume, parseTarget, uid } from './lib'
 import { isGym, MIN_ACTIVITY_MIN, sessionLabel, sessionMin } from './health'
 
 const it = (d: string | Date, o: Intl.DateTimeFormatOptions = { day: 'numeric', month: 'long' }) => new Date(d).toLocaleDateString('it-IT', o)
@@ -9,12 +9,23 @@ function sessionText(l: SessionLog, s: AppState) {
   const prog = s.programs.find((p) => p.id === l.programId)
   const dayIdx = prog ? prog.days.findIndex((d) => d.id === l.dayId) + 1 : 0
   const lines = [`${prog?.name ?? 'Scheda'} Giorno ${dayIdx || '?'} - ${l.dayName} (${it(l.startedAt, { weekday: 'long', day: 'numeric', month: 'long' })})`]
-  for (const e of l.entries) {
+  for (const e of l.entries.filter((x) => !x.circuit)) {
     const groups: { w: number | null; r: number[] }[] = []
     for (const x of e.sets) { const g = groups[groups.length - 1]; if (g && g.w === x.w) g.r.push(x.r ?? 0); else groups.push({ w: x.w, r: [x.r ?? 0] }) }
     lines.push(`- ${e.name}: ${groups.map((g) => `${g.w == null ? '–' : fmtKg(g.w) + ' kg'} × ${g.r.join(', ')}`).join(' | ')}`)
   }
-  if (l.coreRounds) lines.push(`- Circuito addominali: ${l.coreRounds} giri${l.core?.length ? ` (${l.core.map((c) => `${c.name} ${c.target}${c.w != null ? ` ${c.w} kg` : ''}`).join('; ')})` : ''}`)
+  // Circuito addominali: ogni esercizio con le sue ripetizioni (o secondi) per giro, e le pause tra i giri.
+  const circ = l.entries.filter((x) => x.circuit)
+  if (circ.length) {
+    lines.push(`- Circuito addominali: ${l.coreRounds ?? circ[0].sets.length} giri${l.coreRestS?.length ? `, pause tra i giri ${l.coreRestS.join(', ')} s` : ''}`)
+    for (const e of circ) {
+      const u = e.unit === 's' ? ' s' : ''
+      const groups: { w: number | null; r: number[] }[] = []
+      for (const x of e.sets) { const g = groups[groups.length - 1]; if (g && g.w === x.w) g.r.push(x.r ?? 0); else groups.push({ w: x.w, r: [x.r ?? 0] }) }
+      const anyKg = groups.some((g) => g.w != null)
+      lines.push(`  - ${e.name}: ${groups.map((g) => `${g.w == null ? (anyKg ? 'senza kg × ' : '') : fmtKg(g.w) + ' kg × '}${g.r.map((r) => r + u).join(', ')}`).join(' | ')}`)
+    }
+  } else if (l.coreRounds) lines.push(`- Circuito addominali: ${l.coreRounds} giri${l.core?.length ? ` (${l.core.map((c) => `${c.name} ${c.target}${c.w != null ? ` ${c.w} kg` : ''}`).join('; ')})` : ''}`)
   const t: string[] = []
   if (l.durationMs != null) t.push(`durata attiva ${Math.round(l.durationMs / 60000)} min`)
   if (l.pausedMs) t.push(`pause ${Math.round(l.pausedMs / 60000)} min`)
@@ -29,7 +40,7 @@ function sessionText(l: SessionLog, s: AppState) {
 }
 
 export type Range = 'week' | 'today' | 'last'
-export const PATCH_HELP = `Se vuoi modificare la scheda, rispondimi con un blocco \`\`\`alba-patch con JSON: {"day":"nome giorno","note":"motivo","changes":[{"exercise":"nome","sets":3,"reps":"8","weight":65,"technique":"testo","rest":120}],"remove":["nome"],"core_rounds":3,"core":{"rounds":4,"rest":60,"items":[{"name":"V-up","target":"12 rip.","cue":""}]},"minutes":62}. Tutti i campi tranne day e changes sono facoltativi.`
+export const PATCH_HELP = `Se vuoi modificare la scheda, rispondimi con un blocco \`\`\`alba-patch con JSON: {"day":"nome giorno","note":"motivo","changes":[{"exercise":"nome","sets":3,"reps":"8","weight":65,"technique":"testo","rest":120}],"remove":["nome"],"core_rounds":3,"core":{"rounds":4,"rest":60,"items":[{"name":"V-up","target":"12 rip.","cue":""}]},"minutes":62}. Tutti i campi tranne day e changes sono facoltativi. Gli esercizi del circuito addominali si modificano come gli altri, dentro changes (esempio: {\"exercise\":\"Crunch\",\"weight\":7.5} oppure {\"exercise\":\"Hollow hold\",\"reps\":\"45 s\"}).`
 
 export function coachSummary(s: AppState, range: Range, now: Date = new Date()): string {
   const out: string[] = []
@@ -146,7 +157,16 @@ export function applyPatch(day: Day, patch: Patch, nowIso: string): { day: Day; 
   const rows: Preview['rows'] = [], errors: string[] = []
   for (const c of patch.changes ?? []) {
     const e = findEx(next, c.exercise)
-    if (!e) { errors.push(`Esercizio non trovato: ${c.exercise}`); continue }
+    if (!e) {
+      // Un esercizio del circuito addominali si modifica come gli altri: carico e ripetizioni (o secondi).
+      const ci = next.core?.items.find((x) => nn(x.name) === nn(c.exercise))
+      if (!ci) { errors.push(`Esercizio non trovato: ${c.exercise}`); continue }
+      const before = `${ci.target}${ci.w != null ? `, ${fmtKg(ci.w)} kg` : ''}`
+      if (c.reps != null) ci.target = /[a-z]/i.test(String(c.reps)) ? String(c.reps) : fmtTarget(ci.target, Number(c.reps), parseTarget(ci.target).unit)
+      if (c.weight != null) ci.w = c.weight
+      rows.push({ name: `${ci.name} (circuito)`, before, after: `${ci.target}${ci.w != null ? `, ${fmtKg(ci.w)} kg` : ''}` })
+      continue
+    }
     const before = exLine(e) + (e.technique ? `, ${e.technique}` : '')
     if (c.sets != null) e.sets = c.sets
     if (c.reps != null) e.reps = String(c.reps)

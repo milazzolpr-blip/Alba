@@ -353,3 +353,17 @@ textarea { resize: vertical; font-size: 14px; }
 /* Pannello in alto per aggiungere un esercizio: resta visibile con la tastiera aperta */
 .sheet-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(0, 0, 0, .6); }
 .sheet { position: absolute; top: 0; left: 0; right: 0; max-width: 520px; margin: 0 auto; max-height: 75dvh; overflow-y: auto; background: var(--panel); border-radius: 0 0 22px 22px; padding: calc(14px + env(safe-area-inset-top, 0px)) 16px 16px; display: flex; flex-direction: column; gap: 10px; }
+
+/* Circuito addominali: una cella per esercizio e per giro */
+.core-name { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.core-cells { display: flex; gap: 6px; margin-top: 6px; }
+.core-cell { flex: 1; min-width: 0; background: var(--panel-2); border: 1px solid var(--line); border-radius: 10px; padding: 5px 4px; text-align: center; }
+.core-cell.cur { border-color: var(--brass); }
+.core-cell.done { border-color: var(--good); }
+.core-cell .core-in { width: 100%; text-align: center; background: transparent; border: 0; font-family: var(--display); font-size: 20px; padding: 0; }
+.core-cell .core-kg { font: 500 12px var(--body); color: var(--muted); }
+.core-giro { display: block; font-size: 11px; color: var(--muted); }
+.core-cell.done .core-giro { color: var(--good); }
+.edit-entry { border-top: 1px solid var(--line); padding: 8px 0; }
+.edit-entry .edit-set { display: grid; grid-template-columns: 28px 1fr 1fr 36px; gap: 6px; align-items: center; margin-top: 4px; }
+.edit-entry .edit-set input { width: 100%; }

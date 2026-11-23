@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useReducer, type Dispatch, type ReactNode } from 'react'
 import seed from './seed.json'
 import type { Activity, HcSession, ActiveSession, ActiveSet, AppState, Day, Exercise, LoggedSet, Program, SessionLog, StravaAuth } from './types'
-import { exerciseHistory, repsFirst, uid } from './lib'
+import { exerciseHistory, fmtTarget, parseTarget, repsFirst, uid } from './lib'
 import { dayKey, mesoWeek } from './wellness'
 import type { CheckIn, Tomorrow, Wellness } from './types'
 
@@ -105,9 +105,9 @@ export type Action =
   | { type: 'resume' }
   | { type: 'coreRound'; restS: number }
   | { type: 'startCore' }
-  | { type: 'setCoreItem'; idx: number; patch: { target?: string; w?: number | null } }
+  | { type: 'setCoreCell'; item: number; idx: number; field: 'w' | 'r'; value: number | null }
   | { type: 'addExtra'; exercise: Exercise; sets: ActiveSet[]; keep: boolean }
-  | { type: 'editLog'; id: string; add: { name: string; sets: LoggedSet[] }[]; core?: SessionLog['core']; coreRounds?: number; durationMin?: number | null }
+  | { type: 'editLog'; id: string; add: { name: string; sets: LoggedSet[] }[]; entries?: SessionLog['entries']; core?: SessionLog['core']; coreRounds?: number; durationMin?: number | null }
   | { type: 'finish' }
   | { type: 'discard' }
   | { type: 'saveProgram'; program: Program }
@@ -122,7 +122,9 @@ export type Action =
 const closeRest = (a: ActiveSession, now: number): ActiveSession => {
   if (!a.rest) return a
   const taken = a.rest.accMs + (a.rest.startedAt ? now - a.rest.startedAt : 0)
-  return { ...a, rest: null, restMs: a.restMs + taken }
+  // La pausa dopo ogni giro del circuito si registra, così si vede quanto recuperi davvero.
+  const coreRestS = a.rest.label === 'Recupero tra i giri' ? [...(a.coreRestS ?? []), Math.round(taken / 1000)] : a.coreRestS
+  return { ...a, rest: null, restMs: a.restMs + taken, coreRestS }
 }
 
 function reduce(s: AppState, act: Action): AppState {
@@ -144,7 +146,11 @@ function reduce(s: AppState, act: Action): AppState {
         else if (light && n >= 3) n -= 1
         sets[ex.id] = Array.from({ length: n }, () => ({ w, r: repsFirst(ex.reps) || null, done: false }))
       }
-      return { ...s, active: { programId: act.program.id, dayId: act.day.id, startedAt: now, activeMs: 0, resumedAt: now, pausedMs: 0, pausedAt: null, restMs: 0, rest: null, sets, coreRounds: 0, extra: [], core: act.day.core ? structuredClone(act.day.core.items) : undefined } }
+      // Il circuito è un blocco a giri: ogni esercizio ha una cella per giro, con ripetizioni (o secondi) e kg.
+      const core = act.day.core
+      const parsed = core?.items.map((it) => parseTarget(it.target))
+      const coreSets = core ? Object.fromEntries(core.items.map((it, i) => [`core-${i}`, Array.from({ length: core.rounds }, () => ({ w: it.w ?? null, r: parsed![i].r, done: false }))])) : undefined
+      return { ...s, active: { programId: act.program.id, dayId: act.day.id, startedAt: now, activeMs: 0, resumedAt: now, pausedMs: 0, pausedAt: null, restMs: 0, rest: null, sets, coreRounds: 0, extra: [], core: core ? structuredClone(core.items) : undefined, coreSets, coreUnits: parsed?.map((p) => p.unit), coreRestS: [] } }
     }
     case 'setValue': {
       if (!a) return s
@@ -181,12 +187,16 @@ function reduce(s: AppState, act: Action): AppState {
     case 'coreRound': {
       if (!a) return s
       const base = closeRest(a, now)
-      return { ...s, active: { ...base, coreRounds: a.coreRounds + 1, rest: act.restS ? { startedAt: a.resumedAt ? now : null, accMs: 0, plannedMs: act.restS * 1000, label: 'Recupero tra i giri', buzzed: false } : null } }
+      const coreSets = base.coreSets ? Object.fromEntries(Object.entries(base.coreSets).map(([k, row]) => [k, row.map((x, j) => (j === a.coreRounds ? { ...x, done: true } : x))])) : base.coreSets
+      return { ...s, active: { ...base, coreSets, coreRounds: a.coreRounds + 1, rest: act.restS ? { startedAt: a.resumedAt ? now : null, accMs: 0, plannedMs: act.restS * 1000, label: 'Recupero tra i giri', buzzed: false } : null } }
     }
     case 'startCore': return a ? { ...s, active: closeRest(a, now) } : s
-    case 'setCoreItem': {
-      if (!a?.core) return s
-      return { ...s, active: { ...a, core: a.core.map((it, i) => (i === act.idx ? { ...it, ...act.patch } : it)) } }
+    case 'setCoreCell': {
+      const key = `core-${act.item}`
+      if (!a?.coreSets?.[key]) return s
+      // Come nelle serie normali: il valore cambiato vale anche per i giri successivi non ancora fatti.
+      const row = a.coreSets[key].map((x, j) => (j >= act.idx && (j === act.idx || !x.done) ? { ...x, [act.field]: act.value } : x))
+      return { ...s, active: { ...a, coreSets: { ...a.coreSets, [key]: row } } }
     }
     case 'addExtra': {
       if (!a) return s
@@ -195,7 +205,7 @@ function reduce(s: AppState, act: Action): AppState {
     case 'editLog': {
       return { ...s, logs: s.logs.map((l) => {
         if (l.id !== act.id) return l
-        const entries = [...l.entries, ...act.add.filter((e) => e.sets.length)]
+        const entries = [...(act.entries ?? l.entries).filter((e) => e.sets.length), ...act.add.filter((e) => e.sets.length)]
         const durationMs = act.durationMin != null ? act.durationMin * 60000 : l.durationMs
         return { ...l, entries, core: act.core ?? l.core, coreRounds: act.coreRounds ?? l.coreRounds, durationMs, restMs: null }
       }) }
@@ -209,16 +219,21 @@ function reduce(s: AppState, act: Action): AppState {
       const entries = [...day.exercises, ...(a.extra ?? []).filter((x) => !day.exercises.some((y) => y.id === x.id))]
         .map((ex) => ({ name: ex.name, sets: done.sets[ex.id].filter((x) => x.done).map(({ w, r }) => ({ w, r })) }))
         .filter((e) => e.sets.length)
+      // Gli esercizi del circuito entrano nella sessione come tutti gli altri, un'entrata per esercizio con una serie per giro.
+      const circuit = done.coreSets && done.core ? done.core.map((c, i) => ({ name: c.name, sets: (done.coreSets![`core-${i}`] ?? []).filter((x) => x.done).map(({ w, r }) => ({ w, r })), circuit: true as const, ...(done.coreUnits?.[i] === 's' ? { unit: 's' as const } : {}) })).filter((e) => e.sets.length) : []
+      entries.push(...circuit)
       const log: SessionLog = {
         id: `log-${a.startedAt}`, programId: a.programId, dayId: a.dayId, dayName: day.name,
         startedAt: new Date(a.startedAt).toISOString(),
         durationMs: done.activeMs + (done.resumedAt ? now - done.resumedAt : 0),
         pausedMs: done.pausedMs + (done.pausedAt ? now - done.pausedAt : 0),
         restMs: done.restMs, coreRounds: done.coreRounds || undefined, entries,
-        core: done.coreRounds && done.core ? done.core.map((c) => ({ name: c.name, target: c.target, w: c.w ?? null })) : undefined,
+        coreRestS: done.coreRestS?.length ? done.coreRestS : undefined,
+        core: done.coreRounds && done.core && !done.coreSets ? done.core.map((c) => ({ name: c.name, target: c.target, w: c.w ?? null })) : undefined,
       }
       // I valori del circuito di oggi diventano la base per la prossima volta.
-      const programs = done.core && done.coreRounds ? s.programs.map((p) => (p.id === a.programId ? { ...p, days: p.days.map((d) => (d.id === a.dayId && d.core ? { ...d, core: { ...d.core, items: done.core! } } : d)) } : p)) : s.programs
+      const baseItems = done.core?.map((c, i) => { const f = done.coreSets?.[`core-${i}`]?.[0]; return f ? { ...c, target: fmtTarget(c.target, f.r, done.coreUnits?.[i] ?? 'r'), w: f.w ?? null } : c })
+      const programs = baseItems && done.coreRounds ? s.programs.map((p) => (p.id === a.programId ? { ...p, days: p.days.map((d) => (d.id === a.dayId && d.core ? { ...d, core: { ...d.core, items: baseItems } } : d)) } : p)) : s.programs
       return { ...s, active: null, programs, logs: [...s.logs, log] }
     }
     case 'discard': return { ...s, active: null }
