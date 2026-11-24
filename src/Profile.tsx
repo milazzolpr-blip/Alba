@@ -44,7 +44,7 @@ export function Profile() {
     setBusy(true); setMsg('')
     try {
       const r = await hcRead(!state.hcLast ? 'full' : mode)
-      dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions, ms: r.ms, full: r.full })
+      dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions, ms: r.ms, full: r.full, timings: r.timings })
       const sec = `${(r.ms / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 })} s`
       setMsg(r.entries.length ? `Letti ${r.entries.length} giorni da Health Connect${r.activity.length ? `, con ${r.activity.length} giorni di attività e ${r.sessions.length} allenamenti` : ''}, in ${sec}.` : 'Health Connect non ha ancora dati di sonno, frequenza o HRV.')
     } catch (e) { setMsg(e instanceof Error ? e.message : 'Lettura non riuscita.') }
@@ -77,8 +77,9 @@ export function Profile() {
               {hc === 'update' && <p className="hint">Health Connect va installato o aggiornato dal Play Store.</p>}
               <button className="btn btn-primary btn-wide" disabled={busy || hc === 'unsupported'} onClick={connectHc}>{state.hcLast ? 'Ridai i permessi' : 'Collega Health Connect'}</button>
               <button className="btn btn-secondary btn-wide" disabled={busy} onClick={() => readHc('quick')}>Aggiorna adesso</button>
-              {state.hcLast && <p className="hint">Ultima lettura {fmtDate(state.hcLast.at, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}{state.hcLast.ms != null && ` (${state.hcLast.full === false ? 'veloce' : 'completa'}, ${(state.hcLast.ms / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 })} s)`}. Ultima lettura completa, trovati: sonno {state.hcLast.sleep} notti, frequenza a riposo {state.hcLast.hr} misure, HRV {state.hcLast.hrv} giorni. Se HRV è 0, Zepp non lo sta mandando a Health Connect: puoi inserirlo a mano.{state.hcLast.activity != null && ` Attività: ${state.hcLast.activity ? `${state.hcLast.steps ?? 0} giorni con passi, ${state.hcLast.sessions ?? 0} allenamenti.` : 'Zepp non ha mandato passi, calorie o allenamenti, oppure non hai concesso i permessi: tocca «Ridai i permessi».'}`}</p>}
+              {state.hcLast && <p className="hint">Ultima lettura {fmtDate(state.hcLast.at, { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}{state.hcLast.ms != null && ` (${state.hcLast.full === false ? 'veloce' : 'completa'}, ${(state.hcLast.ms / 1000).toLocaleString('it-IT', { maximumFractionDigits: 1 })} s)`}{state.hcLast.timings && ` Dettaglio: sonno ${(state.hcLast.timings.sleep / 1000).toFixed(1)} s, frequenza ${(state.hcLast.timings.rhr / 1000).toFixed(1)} s, HRV ${(state.hcLast.timings.hrv / 1000).toFixed(1)} s, attività ${(state.hcLast.timings.activity / 1000).toFixed(1)} s (${state.hcLast.timings.sessions} allenamenti).`}. Ultima lettura completa, trovati: sonno {state.hcLast.sleep} notti, frequenza a riposo {state.hcLast.hr} misure, HRV {state.hcLast.hrv} giorni. Se HRV è 0, Zepp non lo sta mandando a Health Connect: puoi inserirlo a mano.{state.hcLast.activity != null && ` Attività: ${state.hcLast.activity ? `${state.hcLast.steps ?? 0} giorni con passi, ${state.hcLast.sessions ?? 0} allenamenti.` : 'Zepp non ha mandato passi, calorie o allenamenti, oppure non hai concesso i permessi: tocca «Ridai i permessi».'}`}</p>}
               <button className="link" disabled={busy} onClick={() => readHc('full')}>Rilettura completa degli ultimi 35 giorni</button>
+              <p className="hint">Versione dell'app: {__BUILD__}</p>
               <button className="link" onClick={() => hcOpenSettings().catch(() => {})}>Apri le impostazioni di Health Connect</button>
             </>
           ) : (

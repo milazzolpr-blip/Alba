@@ -3,7 +3,7 @@ import seed from './seed.json'
 import type { Activity, HcSession, ActiveSession, ActiveSet, AppState, Day, Exercise, LoggedSet, Program, SessionLog, StravaAuth } from './types'
 import { exerciseHistory, fmtTarget, parseTarget, repsFirst, uid } from './lib'
 import { dayKey, mesoWeek } from './wellness'
-import type { CheckIn, Tomorrow, Wellness } from './types'
+import type { CheckIn, CoreCircuit, Tomorrow, Wellness } from './types'
 
 const KEY = 'alba.v1'
 const initial = (): AppState => ({
@@ -89,7 +89,7 @@ export type Action =
   | { type: 'setMeso'; startDate?: string; number?: number; trainWeeks?: number }
   | { type: 'setSleepTarget'; min: number }
   | { type: 'copied' }
-  | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number; activity?: Activity[]; sessions?: HcSession[]; ms?: number; full?: boolean }
+  | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number; activity?: Activity[]; sessions?: HcSession[]; ms?: number; full?: boolean; timings?: AppState['hcLast'] extends infer T ? (T extends { timings?: infer U } ? U : never) : never }
   | { type: 'setStepGoal'; steps: number }
   | { type: 'applyPatch'; programId: string; day: Day; note: string }
   | { type: 'revertPatch'; id: string }
@@ -127,11 +127,32 @@ const closeRest = (a: ActiveSession, now: number): ActiveSession => {
   return { ...a, rest: null, restMs: a.restMs + taken, coreRestS }
 }
 
+/** Se un giorno ha perso il circuito addominali ma l'ultima sessione dello stesso giorno lo aveva, lo si ricostruisce da lì. */
+function circuitFromLogs(logs: SessionLog[], programId: string, dayId: string): CoreCircuit | undefined {
+  for (let i = logs.length - 1; i >= 0; i--) {
+    const l = logs[i]
+    if (l.programId !== programId || l.dayId !== dayId) continue
+    const circ = l.entries.filter((e) => e.circuit)
+    if (circ.length) {
+      return { rounds: l.coreRounds ?? circ[0].sets.length, rest: 60, items: circ.map((e) => { const f = e.sets[0]; return { name: e.name, target: f?.r != null ? (e.unit === 's' ? fmtTarget('', f.r, 's') : `${f.r} rip.`) : '12 rip.', cue: '', w: f?.w ?? null } }) }
+    }
+    if (l.core?.length) return { rounds: l.coreRounds ?? 4, rest: 60, items: l.core.map((c) => ({ name: c.name, target: c.target, cue: '', w: c.w })) }
+  }
+  return undefined
+}
+
 function reduce(s: AppState, act: Action): AppState {
   const now = Date.now()
   const a = s.active
   switch (act.type) {
     case 'start': {
+      // Rete di sicurezza: se la scheda del giorno non ha più il circuito ma l'ultima volta lo avevi fatto, torna.
+      const restored = !act.day.core ? circuitFromLogs(s.logs, act.program.id, act.day.id) : undefined
+      if (restored) {
+        const day = { ...act.day, core: restored }
+        const programs = s.programs.map((p) => (p.id === act.program.id ? { ...p, days: p.days.map((d) => (d.id === day.id ? day : d)) } : p))
+        return reduce({ ...s, programs }, { ...act, day })
+      }
       const sets: ActiveSession['sets'] = {}
       const deload = mesoWeek(s).phase === 'deload'
       const light = s.tomorrow?.forDate === dayKey() && s.tomorrow.answer === 'leggera'
@@ -273,8 +294,8 @@ function reduce(s: AppState, act: Action): AppState {
       return { ...s, logs, wellness: [...by.values()].sort((a, b) => a.date.localeCompare(b.date)), activity: [...ab.values()].sort((a, b) => a.date.localeCompare(b.date)).slice(-60), hcSessions,
         hcLast: act.full === false && s.hcLast
           // Lettura veloce: i conteggi restano quelli dell'ultima lettura completa.
-          ? { ...s.hcLast, at: new Date().toISOString(), ms: act.ms, full: false, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0) ? true : s.hcLast.activity }
-          : { at: new Date().toISOString(), days: act.entries.length, sleep: act.sleep, hr: act.hr, hrv: act.hrv, steps: (act.activity ?? []).filter((a) => a.steps != null).length, sessions: (act.sessions ?? []).length, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0), ms: act.ms, full: true } }
+          ? { ...s.hcLast, at: new Date().toISOString(), ms: act.ms, full: false, timings: act.timings, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0) ? true : s.hcLast.activity }
+          : { at: new Date().toISOString(), days: act.entries.length, sleep: act.sleep, hr: act.hr, hrv: act.hrv, steps: (act.activity ?? []).filter((a) => a.steps != null).length, sessions: (act.sessions ?? []).length, activity: act.activity != null && (act.activity.length > 0 || (act.sessions ?? []).length > 0), ms: act.ms, full: true, timings: act.timings } }
     }
     case 'copied': return { ...s, lastCopyAt: new Date().toISOString() }
     case 'applyPatch': {

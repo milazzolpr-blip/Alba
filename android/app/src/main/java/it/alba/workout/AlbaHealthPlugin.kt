@@ -121,7 +121,7 @@ class AlbaHealthPlugin : Plugin() {
     }
 
     private class Day { var sleep = 0L; var hasSleep = false; var hr: Long? = null; var hrv: Double? = null }
-    private class Parts(val sleep: List<SleepSessionRecord>, val rhr: List<RestingHeartRateRecord>, val hrv: Map<String, List<Double>>, val act: Pair<JSArray, JSArray>)
+    private class Parts(val sleep: List<SleepSessionRecord>, val rhr: List<RestingHeartRateRecord>, val hrv: Map<String, List<Double>>, val act: Pair<JSArray, JSArray>, val t: LongArray)
 
     /** Una sola richiesta per intervallo con tutte le misure che servono, invece di una richiesta per misura. */
     @Suppress("UNCHECKED_CAST")
@@ -216,12 +216,14 @@ class AlbaHealthPlugin : Plugin() {
                 val withActivity = client.permissionController.getGrantedPermissions().containsAll(activityPerms())
 
                 // Sonno, frequenza, HRV e attività si leggono insieme.
+                // t[0..3]: durata in ms di sonno, frequenza, HRV e attività (per capire cosa rallenta la lettura).
+                val t = LongArray(4)
                 val p = coroutineScope {
-                    val sleepJ = async { client.readRecords(ReadRecordsRequest(SleepSessionRecord::class, range, pageSize = 500)).records }
-                    val rhrJ = async { client.readRecords(ReadRecordsRequest(RestingHeartRateRecord::class, range, pageSize = 500)).records }
-                    val hrvJ = async { readHrv(range, zone) }
-                    val actJ = async { if (withActivity) { try { readActivity(zone, actDays) } catch (e: Throwable) { Pair(JSArray(), JSArray()) } } else Pair(JSArray(), JSArray()) }
-                    Parts(sleepJ.await(), rhrJ.await(), hrvJ.await(), actJ.await())
+                    val sleepJ = async { val a0 = System.currentTimeMillis(); val r = client.readRecords(ReadRecordsRequest(SleepSessionRecord::class, range, pageSize = 500)).records; t[0] = System.currentTimeMillis() - a0; r }
+                    val rhrJ = async { val a0 = System.currentTimeMillis(); val r = client.readRecords(ReadRecordsRequest(RestingHeartRateRecord::class, range, pageSize = 500)).records; t[1] = System.currentTimeMillis() - a0; r }
+                    val hrvJ = async { val a0 = System.currentTimeMillis(); val r = readHrv(range, zone); t[2] = System.currentTimeMillis() - a0; r }
+                    val actJ = async { val a0 = System.currentTimeMillis(); val r = if (withActivity) { try { readActivity(zone, actDays) } catch (e: Throwable) { Pair(JSArray(), JSArray()) } } else Pair(JSArray(), JSArray()); t[3] = System.currentTimeMillis() - a0; r }
+                    Parts(sleepJ.await(), rhrJ.await(), hrvJ.await(), actJ.await(), t)
                 }
 
                 // Sonno: la notte si assegna al giorno del risveglio; si contano solo le fasi di sonno vero.
@@ -261,7 +263,8 @@ class AlbaHealthPlugin : Plugin() {
                     arr.put(o)
                 }
                 call.resolve(JSObject().put("days", arr).put("activity", p.act.first).put("sessions", p.act.second)
-                    .put("sleepRecords", p.sleep.size).put("hrRecords", p.rhr.size).put("hrvDays", p.hrv.size).put("ms", System.currentTimeMillis() - t0))
+                    .put("sleepRecords", p.sleep.size).put("hrRecords", p.rhr.size).put("hrvDays", p.hrv.size).put("ms", System.currentTimeMillis() - t0)
+                    .put("timings", JSObject().put("sleep", p.t[0]).put("rhr", p.t[1]).put("hrv", p.t[2]).put("activity", p.t[3]).put("sessions", p.act.second.length())))
             } catch (e: Throwable) { call.reject(e.message ?: "lettura non riuscita") }
         }
     }

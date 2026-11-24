@@ -99,5 +99,5 @@ export interface AppState {
   seedApplied?: string[] // esercizi del seed già consolidati nella tua scheda
   settings: Settings
   lastCopyAt: string | null
-  hcLast: { at: string; days: number; sleep: number; hr: number; hrv: number; steps?: number; sessions?: number; activity?: boolean; ms?: number; full?: boolean } | null
+  hcLast: { at: string; days: number; sleep: number; hr: number; hrv: number; steps?: number; sessions?: number; activity?: boolean; ms?: number; full?: boolean; timings?: { sleep: number; rhr: number; hrv: number; activity: number; sessions: number } } | null
 }

@@ -43,7 +43,7 @@ function Shell() {
     const last = state.hcLast
     const quick = !!last && state.wellness.length >= 20
     if (quick && Date.now() - new Date(last.at).getTime() < 5 * 60 * 1000) return
-    hcCheck().then((c) => (c.granted ? hcRead(quick ? 'quick' : 'full') : null)).then((r) => { if (r) dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions, ms: r.ms, full: r.full }) }).catch(() => {})
+    hcCheck().then((c) => (c.granted ? hcRead(quick ? 'quick' : 'full') : null)).then((r) => { if (r) dispatch({ type: 'mergeHealth', entries: r.entries, sleep: r.sleepRecords, hr: r.hrRecords, hrv: r.hrvDays, activity: r.activity, sessions: r.sessions, ms: r.ms, full: r.full, timings: r.timings }) }).catch(() => {})
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch])
   useEffect(() => { window.scrollTo(0, 0) }, [tab, stack.length])

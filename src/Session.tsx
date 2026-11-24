@@ -222,6 +222,7 @@ export function Session({ onClose, onFinished }: { onClose: () => void; onFinish
         <div className="session-end">
           <button className="btn btn-primary btn-wide" onClick={finish} disabled={doneSets === 0 && a.coreRounds === 0}>Termina e salva allenamento</button>
           <ConfirmButton label="Annulla allenamento" confirm="Tocca ancora per cancellare questa sessione" onConfirm={() => { dispatch({ type: 'discard' }); onClose() }} />
+          <p className="hint diag">Versione {__BUILD__} · {a.programId} / {a.dayId} · circuito {day.core ? `sì, ${day.core.items.length} esercizi` : 'no'}{a.coreSets ? `, ${Object.keys(a.coreSets).length} celle` : ', senza celle'}</p>
         </div>
       </div>
 
