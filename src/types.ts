@@ -79,7 +79,7 @@ export interface CheckIn { date: string; energy: number; mood: number; stress: n
 export interface Tomorrow { forDate: string; answer: 'piano' | 'leggera' | 'diversa' | 'riposo'; legs: number; note: string; answeredAt: string }
 export interface Mesocycle { number: number; startDate: string; trainWeeks: number }
 export interface AppliedPatch { id: string; at: string; programId: string; dayId: string; dayName: string; note: string; before: Day; reverted?: boolean; consolidated?: boolean }
-export interface Settings { sleepTargetMin: number; stepGoal?: number }
+export interface Settings { sleepTargetMin: number; stepGoal?: number; hrvFromHealth?: boolean }
 export interface Activity { date: string; steps: number | null; distanceM: number | null; activeKcal: number | null; totalKcal: number | null }
 export interface HcSession { id: string; start: string; end: string; type: number; title: string | null; avgHr: number | null; maxHr: number | null; kcal: number | null; distanceM: number | null }
 export interface WatchData { avgHr: number | null; maxHr: number | null; kcal: number | null }

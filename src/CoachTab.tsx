@@ -80,6 +80,17 @@ export function CoachTab({ nav }: { nav: Nav }) {
             </div>
           </div>
         )}
+        {parsed?.kind === 'hrv' && (
+          <div className="card diff">
+            {parsed.text && <p>{parsed.text}</p>}
+            <div className="card-title"><strong>HRV da correggere</strong><span>{parsed.values.length} giorni</span></div>
+            <ul className="list">{parsed.values.map((v) => { const o = state.wellness.find((w) => w.date === v.date); return <li key={v.date} className="diff-row"><strong>{new Date(v.date + 'T12:00:00').toLocaleDateString('it-IT', { weekday: 'short', day: 'numeric', month: 'short' })}</strong><span className="hint">Prima: {o?.hrv ?? '–'} ms</span><span className="diff-after">Dopo: {v.value} ms</span></li> })}</ul>
+            <div className="act-row">
+              <button className="btn btn-secondary" onClick={() => setReply('')}>Scarta</button>
+              <button className="btn btn-primary" onClick={() => { dispatch({ type: 'setHrvValues', values: parsed.values }); setReply(''); setMsg('HRV aggiornato.') }}>Applica HRV</button>
+            </div>
+          </div>
+        )}
         {parsed?.kind === 'program' && (
           <div className="card diff">
             {parsed.text && <p>{parsed.text}</p>}

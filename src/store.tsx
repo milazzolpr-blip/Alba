@@ -91,6 +91,8 @@ export type Action =
   | { type: 'copied' }
   | { type: 'mergeHealth'; entries: Wellness[]; sleep: number; hr: number; hrv: number; activity?: Activity[]; sessions?: HcSession[]; ms?: number; full?: boolean; timings?: AppState['hcLast'] extends infer T ? (T extends { timings?: infer U } ? U : never) : never }
   | { type: 'setStepGoal'; steps: number }
+  | { type: 'setHrvFromHealth'; value: boolean }
+  | { type: 'setHrvValues'; values: { date: string; value: number }[] }
   | { type: 'applyPatch'; programId: string; day: Day; note: string }
   | { type: 'revertPatch'; id: string }
   | { type: 'importProgram'; program: Program }
@@ -263,14 +265,20 @@ function reduce(s: AppState, act: Action): AppState {
     case 'saveCheckin': return { ...s, checkins: [...s.checkins.filter((c) => c.date !== act.entry.date), act.entry].sort((a, b) => a.date.localeCompare(b.date)) }
     case 'setTomorrow': return { ...s, tomorrow: act.value }
     case 'setMeso': return { ...s, meso: { ...s.meso, ...(act.startDate ? { startDate: act.startDate } : {}), ...(act.number ? { number: act.number } : {}), ...(act.trainWeeks ? { trainWeeks: act.trainWeeks } : {}) } }
+    case 'setHrvValues': {
+      const by = new Map(s.wellness.map((w) => [w.date, w]))
+      for (const v of act.values) { const o = by.get(v.date); by.set(v.date, { date: v.date, sleepMin: o?.sleepMin ?? null, restHr: o?.restHr ?? null, hrv: v.value, source: o?.source ?? 'manual' }) }
+      return { ...s, wellness: [...by.values()].sort((a, b) => a.date.localeCompare(b.date)) }
+    }
+    case 'setHrvFromHealth': return { ...s, settings: { ...s.settings, hrvFromHealth: act.value } }
     case 'setStepGoal': return { ...s, settings: { ...s.settings, stepGoal: act.steps } }
     case 'setSleepTarget': return { ...s, settings: { ...s.settings, sleepTargetMin: act.min } }
     case 'mergeHealth': {
       const by = new Map(s.wellness.map((w) => [w.date, w]))
       for (const e of act.entries) {
         const o = by.get(e.date)
-        // I valori dell'orologio sostituiscono quelli a mano solo dove ci sono.
-        by.set(e.date, { date: e.date, sleepMin: e.sleepMin ?? o?.sleepMin ?? null, restHr: e.restHr ?? o?.restHr ?? null, hrv: e.hrv ?? o?.hrv ?? null, source: 'healthconnect' })
+        // Sonno e frequenza dell'orologio sostituiscono quelli a mano. L'HRV a mano non si sovrascrive mai; quello di Health Connect entra solo se l'opzione è attiva e il giorno è vuoto.
+        by.set(e.date, { date: e.date, sleepMin: e.sleepMin ?? o?.sleepMin ?? null, restHr: e.restHr ?? o?.restHr ?? null, hrv: s.settings.hrvFromHealth ? (o?.hrv ?? e.hrv ?? null) : (o?.hrv ?? null), source: 'healthconnect' })
       }
       const ab = new Map((s.activity ?? []).map((a) => [a.date, a]))
       for (const a of act.activity ?? []) ab.set(a.date, a)

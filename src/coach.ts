@@ -99,7 +99,7 @@ export interface Change { exercise: string; sets?: number; reps?: string; weight
 export interface AddEx { name: string; sets: number; reps: string; weight?: number | null; rest?: number; technique?: string; after?: string }
 export interface Patch { day: string; note?: string; changes?: Change[]; add?: AddEx[]; remove?: string[]; core_rounds?: number; core?: { rounds?: number; rest?: number; items?: { name: string; target: string; cue?: string }[] }; minutes?: number }
 export interface LogIn { day: string; startedAt: string; durationMin?: number | null; coreRounds?: number; entries: { name: string; sets: (number | null)[][] | LoggedSet[] }[] }
-export type Parsed = { kind: 'log'; log: LogIn; text: string } | { kind: 'patch'; patch: Patch; text: string } | { kind: 'program'; program: Program; text: string } | { kind: 'none'; text: string; error?: string }
+export type Parsed = { kind: 'log'; log: LogIn; text: string } | { kind: 'patch'; patch: Patch; text: string } | { kind: 'program'; program: Program; text: string } | { kind: 'hrv'; values: { date: string; value: number }[]; text: string } | { kind: 'none'; text: string; error?: string }
 
 export function parseCoach(raw: string): Parsed {
   const text = raw.trim()
@@ -115,6 +115,11 @@ export function parseCoach(raw: string): Parsed {
   let j: Record<string, unknown>
   try { j = JSON.parse(body) } catch { return { kind: 'none', text, error: 'Il blocco non è un JSON valido. Chiedi al coach di rimandarlo.' } }
   // Il tipo si riconosce dal contenuto, quindi funziona anche se la parola alba-… non è stata copiata.
+  if (Array.isArray(j.hrv)) {
+    const values = (j.hrv as { date?: unknown; value?: unknown }[]).filter((v) => typeof v?.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(v.date as string) && typeof v?.value === 'number' && isFinite(v.value as number)).map((v) => ({ date: v.date as string, value: Math.round(v.value as number) }))
+    if (!values.length) return { kind: 'none', text, error: 'Nel blocco HRV non trovo date e valori leggibili.' }
+    return { kind: 'hrv', values, text: text.replace(whole, '').trim() }
+  }
   if (kind !== 'patch' && kind !== 'program' && kind !== 'log') kind = Array.isArray(j.days) ? 'program' : Array.isArray(j.entries) ? 'log' : 'patch'
   const prose = text.replace(whole, '').trim()
   if (kind === 'log') {
